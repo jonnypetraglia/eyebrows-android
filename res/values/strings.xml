@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Eyebrows</string>
+    <string name="connection_info">Connection Info</string>
+    <string name="authentication">Authentication</string>
+    <string name="host">Host</string>
+    <string name="port">Port</string>
+    <string name="ssl">SSL</string>
+    <string name="username">Username</string>
+    <string name="password">Password</string>
+    <string name="connect">Connect</string>
+    <string name="upload">Upload</string>
+    <string name="up_a_level">Up a level</string>
+    <string name="no_items">No Items</string>
+
+    <string name="insufficient_info">Insufficient Info</string>
+</resources>

@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:orientation="vertical"
+              android:background="@android:color/white"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content">
+
+    <LinearLayout
+              android:orientation="horizontal"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent" android:background="@color/header_bg">
+
+        <ImageButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/up_level"
+                android:layout_gravity="center"
+                android:contentDescription="@string/up_a_level"
+                android:src="@drawable/ic_action_goright"/>
+
+        <Spinner
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/path_spinner"
+                android:layout_gravity="center"
+                android:layout_weight="1"
+                android:textSize="10dip"/>
+
+        <ImageButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/upload"
+                android:layout_gravity="center"
+                android:contentDescription="@string/upload"
+                android:src="@drawable/ic_action_upload"/>
+    </LinearLayout>
+
+    <ListView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@android:id/list"
+            android:cacheColorHint="@android:color/transparent"
+            android:scrollingCache="false"/>
+
+    <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:padding="10dip"
+            android:id="@android:id/empty"
+            android:textStyle="italic"
+            android:text="@string/no_items"
+            />
+
+    <View
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@android:color/white" />
+
+</LinearLayout>

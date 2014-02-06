@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:orientation="vertical"
+              android:layout_width="match_parent"
+              android:padding="15dp"
+              android:layout_height="match_parent"
+              android:background="@android:color/white">
+
+    <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/connection_info"
+            android:textColor="@android:color/black"
+            android:layout_gravity="left|center_vertical"/>
+    <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/host"
+            android:layout_gravity="left"
+            android:hint="@string/host"
+            />
+
+    <LinearLayout
+                  android:orientation="horizontal"
+                  android:layout_width="match_parent"
+                  android:layout_height="wrap_content" >
+        <EditText
+                android:layout_width="0dip"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:id="@+id/port"
+                android:layout_gravity="left"
+                android:inputType="number"
+                android:hint="@string/port"
+                />
+        <CheckBox
+                android:layout_width="0dip"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/ssl"
+                android:id="@+id/ssl"
+                android:checked="false"
+                android:textColor="@android:color/black"
+                />
+
+    </LinearLayout>
+
+    <View
+            android:layout_width="fill_parent"
+            android:layout_height="1dip"
+            android:background="@android:color/darker_gray"
+            android:layout_margin="10dp"
+            />
+    <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/authentication"
+            android:textColor="@android:color/black"
+            android:layout_gravity="left|center_vertical"/>
+
+    <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/username"
+            android:layout_gravity="left"
+            android:hint="@string/username"
+            />
+    <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/password"
+            android:inputType="textPassword"
+            android:layout_gravity="left"
+            android:hint="@string/password"
+            />
+    <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/connect"
+            android:id="@+id/save"
+            android:layout_gravity="right|center_vertical"/>
+</LinearLayout>
