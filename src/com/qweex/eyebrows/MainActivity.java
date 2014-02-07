@@ -73,9 +73,10 @@ public class MainActivity extends Activity implements Spinner.OnItemSelectedList
         this.findViewById(R.id.up_level).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(uri_path.size()>1)
-                    uri_path.remove(uri_path.size()-1);
-                getData();
+                finish();
+                //if(uri_path.size()>1)
+                    //uri_path.remove(uri_path.size()-1);
+                //getData();
             }
         });
 
@@ -222,11 +223,21 @@ public class MainActivity extends Activity implements Spinner.OnItemSelectedList
         int res_id = (Integer)findViewById(R.id.fileicon).getTag();
         if(res_id == R.drawable.ic_action_folder_closed)
         {
-            ArrayList<String> new_path = new ArrayList<String>();
+            ArrayList<String> new_path = new ArrayList<String>(uri_path);
             if(new_path.size()>0)
                 new_path.remove(0);
             new_path.add(filename);
             startNew(this, host, port, ssl, username, password, new_path);
+        } else {
+            ArrayList<String> new_path = new ArrayList<String>(uri_path);
+            if(new_path.size()>0)
+                new_path.remove(0);
+            new_path.add(filename);
+            // DOWNLOAD
+            Intent myIntent = new Intent(Intent.ACTION_VIEW,
+                    Uri.parse("http" + (ssl ? "s" : "") + "://" + host + ":" + port + "/" +
+                            TextUtils.join("/", new_path)));
+            startActivity(myIntent);
         }
     }
 

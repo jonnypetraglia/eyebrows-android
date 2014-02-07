@@ -19,7 +19,7 @@ public class CreateServer extends Activity implements View.OnClickListener{
 
 
         //Test Data
-        ((TextView)findViewById(R.id.host)).setText("132.194.242.207");
+        ((TextView)findViewById(R.id.host)).setText("192.168.0.112");
         ((TextView)findViewById(R.id.port)).setText("9002");
         ((CheckBox)findViewById(R.id.ssl)).setChecked(false);
         ((TextView)findViewById(R.id.username)).setText("notbryant");
