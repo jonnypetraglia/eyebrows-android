@@ -12,6 +12,8 @@
     <string name="upload">Upload</string>
     <string name="up_a_level">Up a level</string>
     <string name="no_items">No Items</string>
+    <string name="error">Error</string>
+    <string name="upload_files">Upload Files</string>
 
     <string name="insufficient_info">Insufficient Info</string>
 </resources>
