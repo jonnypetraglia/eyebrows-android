@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Eyebrows</string>
+    <string name="about">About</string>
+
+    <string name="eyebrows_logo">Eyebrows Logo</string>
+    <string name="me">Jon Petraglia</string>
+    <string name="copyright">Copyright © 2014 Qweex</string>
+    <string name="license">Licensed under the BSD license</string>
+    <string name="special_thanks">Special Thanks</string>
+    <string name="special_thanks_1">• VoNWooDSoN, for motivating me to FINALLY write something in Python!</string>
+
+</resources>

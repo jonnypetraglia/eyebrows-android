@@ -34,24 +34,24 @@
                 android:inputType="number"
                 android:hint="@string/port"
                 />
-        <CheckBox
-                android:layout_width="0dip"
-                android:layout_height="wrap_content"
+        <FrameLayout
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:text="@string/ssl"
-                android:id="@+id/ssl"
-                android:checked="false"
-                android:textColor="@android:color/black"
-                />
+
+                >
+            <CheckBox
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/ssl"
+                    android:id="@+id/ssl"
+                    android:checked="false"
+                    android:textColor="@android:color/black"
+                    android:layout_gravity="center"/>
+        </FrameLayout>
 
     </LinearLayout>
 
-    <View
-            android:layout_width="fill_parent"
-            android:layout_height="1dip"
-            android:background="@android:color/darker_gray"
-            android:layout_margin="10dp"
-            />
     <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -74,10 +74,42 @@
             android:layout_gravity="left"
             android:hint="@string/password"
             />
+
+
+    <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_margin="15dp"
+            android:background="#c0c0c0"
+            />
+
     <Button
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/connect"
+            android:id="@+id/connect"
+            android:layout_gravity="right|center_vertical"/>
+
+    <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="@string/or"
+            android:textColor="@android:color/black"/>
+
+    <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/name"
+            android:inputType="text"
+            android:layout_gravity="left"
+            android:hint="@string/name"
+            />
+
+    <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/save"
             android:id="@+id/save"
             android:layout_gravity="right|center_vertical"/>
 </LinearLayout>

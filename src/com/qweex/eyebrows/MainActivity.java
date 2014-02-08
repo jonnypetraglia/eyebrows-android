@@ -146,9 +146,10 @@ public class MainActivity extends FragmentActivity implements Spinner.OnItemSele
     // Creates options menu
     @Override
     public boolean onCreateOptionsMenu(Menu u) {
-        MenuItem mu = u.add(0,0,0,"Download as ZIP");
-        mu = u.add(0,1,0, "Refresh");
-        mu = u.add(0,2,0, "Exit to Server List");
+        MenuItem mu;
+        mu = u.add(0,0,0, R.string.download_as_zip);
+        mu = u.add(0,1,0, R.string.refresh);
+        mu = u.add(0,2,0, R.string.exit);
         return super.onCreateOptionsMenu(u);
     }
 
@@ -169,7 +170,6 @@ public class MainActivity extends FragmentActivity implements Spinner.OnItemSele
 
         }
         return super.onOptionsItemSelected(item);
-
     }
 
     // Shows an error dialog and quits the activity whenever the user acknowledges it
@@ -199,6 +199,26 @@ public class MainActivity extends FragmentActivity implements Spinner.OnItemSele
         fragments.add(mf);
         pager.getAdapter().notifyDataSetChanged();
         pager.setCurrentItem(fragments.size()-1, true);
+    }
+
+    @Override
+    public void finish()
+    {
+        if(findViewById(R.id.notification).getVisibility()==View.VISIBLE) {
+            new AlertDialog.Builder(MainActivity.this)
+                    .setMessage(R.string.finish_confirm_cancel)
+                    .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            uploader.cancel(true);
+                            MainActivity.super.finish();
+                        }
+                    })
+                    .setNegativeButton(R.string.no, null)
+                    .show();
+        } else {
+            super.finish();
+        }
     }
 
     // Pops a fragment off or if there is only 1 fragment, finishes
