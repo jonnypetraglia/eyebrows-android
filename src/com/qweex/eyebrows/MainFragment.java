@@ -1,7 +1,6 @@
 package com.qweex.eyebrows;
 
 import android.app.AlertDialog;
-import android.app.Dialog;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -112,9 +111,10 @@ public class MainFragment extends Fragment implements ListView.OnItemClickListen
                     folderListingJSON = (new JSONDownloader().new https()).readJsonFromUrl(authString, "http://" + path_to_load);
 
                 for(int i=0; i<folderListingJSON.length(); i++) {
-                    if(((JSONObject)folderListingJSON.get(i)).get("icon")=="picture-o")
-                        imageListing.add((String)((JSONObject)folderListing.get(i)).get("filename"));
-                    folderListing.add((JSONObject) folderListingJSON.get(i));
+                    JSONObject j = (JSONObject) folderListingJSON.get(i);
+                    folderListing.add(j);
+                    if("picture-o".equals(j.get("icon")))
+                        imageListing.add((j.getString("name")));
                 }
                 return folderListing;
             } catch (EyebrowsError e) {
@@ -217,21 +217,36 @@ public class MainFragment extends Fragment implements ListView.OnItemClickListen
         String filename = ((TextView)view.findViewById(R.id.filename)).getText().toString();
         Log.d("Eyebrows:onItemClick", filename);
 
-        int res_id = (Integer)getView().findViewById(R.id.fileicon).getTag();
-        if(res_id == R.drawable.ic_action_folder_closed)
-        {
-            ArrayList<String> new_path = new ArrayList<String>(uri_path);
-            new_path.add(filename);
-            ((MainActivity)getActivity()).addFragment(new_path);
-            //startNew(this, host, port, ssl, username, password, new_path);
-        } else {
-            // DOWNLOAD
-            Log.d("Eyebrows", "Downloading: " + "http" + (ssl ? "s" : "") + "://" + host + ":" + port + "/" +
-                    getPathUrl());
-            Intent myIntent = new Intent(Intent.ACTION_VIEW,
-                    Uri.parse("http" + (ssl ? "s" : "") + "://" + host + ":" + port + "/" +
-                            getPathUrl()));
-            startActivityForResult(myIntent, 0);
+        int res_id = (Integer)view.findViewById(R.id.fileicon).getTag();
+        Log.d("Eyebrows", "Downloading? " + res_id + "=?" + R.drawable.ic_action_picture);
+        switch(res_id) {
+            case R.drawable.ic_action_folder_closed:
+                ArrayList<String> new_path = new ArrayList<String>(uri_path);
+                new_path.add(filename);
+                ((MainActivity)getActivity()).addFragment(new_path);
+                break;
+            case R.drawable.ic_action_picture:
+                Intent i = new Intent(getActivity(), PictureViewer.class);
+                Bundle b = new Bundle();
+                b.putStringArrayList("images", imageListing);
+                b.putString("path", getBaseUrl());
+                b.putString("filename", filename);
+                b.putString("authString", authString);
+                b.putBoolean("ssl", ssl);
+                i.putExtras(b);
+                startActivity(i);
+                break;
+            default:
+                // DOWNLOAD
+
+                Log.d("Eyebrows", "Downloading: " + getBaseUrl() + getPathUrl() + filename);
+                Intent myIntent = new Intent(Intent.ACTION_VIEW,
+                        Uri.parse(getBaseUrl() + getPathUrl() + filename));
+                startActivityForResult(myIntent, 0);
         }
+    }
+
+    String getBaseUrl() {
+        return "http" + (ssl ? "s" : "") + "://" + host + ":" + port + "/";
     }
 }

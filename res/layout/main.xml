@@ -18,7 +18,7 @@
                 android:id="@+id/up_level"
                 android:layout_gravity="center"
                 android:contentDescription="@string/up_a_level"
-                android:src="@drawable/ic_action_goright"/>
+                style="@style/UpButton"/>
 
         <Spinner
                 android:layout_width="0dip"
@@ -34,7 +34,7 @@
                 android:id="@+id/upload"
                 android:layout_gravity="center"
                 android:contentDescription="@string/upload"
-                android:src="@drawable/ic_action_upload"/>
+                style="@style/UploadButton"/>
     </LinearLayout>
 
     <com.qweex.eyebrows.did_not_write.CustomViewPager

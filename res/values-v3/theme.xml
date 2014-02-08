@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="NoActionBar"
+           parent="@android:style/Theme.NoTitleBar.Fullscreen">
+    </style>
+
+    <style name="Eyebrows"
+           parent="@android:style/Theme.DeviceDefault">
+    </style>
+
+
+    <style name="UploadButton">
+        <item name="android:src">@drawable/ic_action_upload</item>
+    </style>
+
+    <style name="UpButton">
+        <item name="android:src">@drawable/ic_action_goright</item>
+    </style>
+</resources>
