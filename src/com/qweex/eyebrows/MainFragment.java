@@ -1,6 +1,7 @@
 package com.qweex.eyebrows;
 
-import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -18,7 +19,9 @@ import org.json.JSONObject;
 
 import java.io.*;
 import java.net.ConnectException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 // This fragment is a single folder view; it is inserted into MainActivity
@@ -164,8 +167,49 @@ public class MainFragment extends Fragment implements ListView.OnItemClickListen
     //ListView
     @Override
     public boolean onItemLongClick(AdapterView<?> adapterView, View view, int pos, long l) {
-        return false;
+
+        ArrayList<String> msg = new ArrayList<String>();
+        JSONObject item = (JSONObject) listview.getAdapter().getItem(pos);
+
+        String title = null;
+        Button download = null;
+        try {
+            title = item.getString("name");
+        } catch (JSONException e) {}
+        try {
+            if(EyebrowsAdapter.iconHash.get(item.getString("icon")) != R.drawable.ic_action_folder_closed)
+            {
+                msg.add("Size:    " + item.getString("size"));
+                download = new Button(getActivity());
+                download.setText(R.string.download);
+                download.setPadding(10,10,10,10);
+                download.setTag(title);
+                download.setOnClickListener(downloadFromPopup);
+            }
+        } catch (JSONException e) {}
+          catch (NullPointerException e) {}
+        try {
+            msg.add("Time:    " + new SimpleDateFormat("MMM dd, yyyy hh:mm a").format(new Date(item.getLong("time")*1000)));
+        } catch (JSONException e) {}
+
+        new AlertDialog.Builder(getActivity())
+                .setTitle(title)
+                .setMessage(TextUtils.join("\n",msg))
+                .setNegativeButton(android.R.string.ok, null)
+                .setView(download)
+                .show();
+        return true;
     }
+
+    View.OnClickListener downloadFromPopup = new View.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+            Intent myIntent = new Intent(Intent.ACTION_VIEW,
+                    Uri.parse("http" + (ssl ? "s" : "") + "://" + host + ":" + port + "/" +
+                            getPathUrl()));
+            startActivityForResult(myIntent, 0);
+        }
+    };
 
     //ListView
     @Override
@@ -182,6 +226,8 @@ public class MainFragment extends Fragment implements ListView.OnItemClickListen
             //startNew(this, host, port, ssl, username, password, new_path);
         } else {
             // DOWNLOAD
+            Log.d("Eyebrows", "Downloading: " + "http" + (ssl ? "s" : "") + "://" + host + ":" + port + "/" +
+                    getPathUrl());
             Intent myIntent = new Intent(Intent.ACTION_VIEW,
                     Uri.parse("http" + (ssl ? "s" : "") + "://" + host + ":" + port + "/" +
                             getPathUrl()));

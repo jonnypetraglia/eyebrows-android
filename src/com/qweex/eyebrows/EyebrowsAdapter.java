@@ -21,7 +21,7 @@ public class EyebrowsAdapter extends ArrayAdapter<JSONObject> {
     Context context;
     static final int RES_ID = R.layout.item;
 
-    private static final Map<String, Integer> iconHash;
+    public static final Map<String, Integer> iconHash;
     static
     {
         iconHash = new HashMap<String, Integer>();
