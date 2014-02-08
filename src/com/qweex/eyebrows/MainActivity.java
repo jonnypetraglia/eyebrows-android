@@ -54,6 +54,7 @@ public class MainActivity extends FragmentActivity implements Spinner.OnItemSele
         path_spinner.setAdapter(spinnerAdapter);
         path_spinner.setOnItemSelectedListener(this);
 
+
         findViewById(R.id.upload).setOnClickListener(clickUpload);
 
         addFragment(new ArrayList<String>());
@@ -124,7 +125,8 @@ public class MainActivity extends FragmentActivity implements Spinner.OnItemSele
         public void onClick(View view) {
             new AlertDialog.Builder(MainActivity.this)
                     .setMessage(R.string.confirm_cancel)
-                    .setPositiveButton(android.R.string.yes, confirmCancel)
+                    .setPositiveButton(R.string.yes, confirmCancel)
+                    .setNegativeButton(R.string.no, null)
                     .show();
         }
     };
@@ -134,6 +136,7 @@ public class MainActivity extends FragmentActivity implements Spinner.OnItemSele
         @Override
         public void onClick(DialogInterface dialogInterface, int i) {
             uploader.cancel(true);
+            hideNotification.run();
         }
     };
 
@@ -229,7 +232,7 @@ public class MainActivity extends FragmentActivity implements Spinner.OnItemSele
                     Log.d("Eyebrows", "Popping " + fragments.size());
                     fragments.remove(fragments.size()-1);
                 }
-                setSpinner(fragments.get(fragments.size()-1).getPath());
+                setSpinner(fragments.get(fragments.size() - 1).getPath());
                 pager.getAdapter().notifyDataSetChanged();
             }
         }
@@ -238,7 +241,7 @@ public class MainActivity extends FragmentActivity implements Spinner.OnItemSele
     // Shows the notification bar
     public Runnable showNotification = new Runnable() {
         public void run() {
-            Animation anim = AnimationUtils.loadAnimation(MainActivity.this, R.anim.slide_out_bottom);
+            Animation anim = AnimationUtils.loadAnimation(MainActivity.this, R.anim.slide_in_top);
             ((TextView)findViewById(R.id.notification_text)).setText("");
             ((ProgressBar)findViewById(R.id.notification_bar)).setProgress(0);
             findViewById(R.id.notification).setVisibility(View.VISIBLE);
@@ -272,7 +275,9 @@ public class MainActivity extends FragmentActivity implements Spinner.OnItemSele
             TextView text = (TextView) findViewById(R.id.notification_text);
             ProgressBar bar = (ProgressBar) findViewById(R.id.notification_bar);
 
-            bar.setProgress((int)(part/100));
+
+            Log.d("Eyebrows", part + " of " + whole);
+            bar.setProgress((int) (part / 100));
             bar.setMax((int)(whole/100));
             text.setText(filename);
         }

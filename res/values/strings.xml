@@ -16,7 +16,10 @@
     <string name="upload_files">Upload Files</string>
     <string name="home">Home</string>
     <string name="file_icon">File Icon</string>
-    <string name="confirm_cancel">Cancel?</string>
+    <string name="confirm_cancel">Would you really like to cancel uploading?</string>
+
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
 
     <string name="insufficient_info">Insufficient Info</string>
 </resources>
