@@ -12,6 +12,8 @@ import android.util.Base64;
 import android.util.Log;
 import android.view.*;
 import android.widget.*;
+import com.qweex.eyebrows.did_not_write.FileUploader;
+import com.qweex.eyebrows.did_not_write.JSONDownloader;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;

@@ -1,4 +1,4 @@
-package com.qweex.eyebrows;
+package com.qweex.eyebrows.did_not_write;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
