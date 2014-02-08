@@ -18,12 +18,12 @@ import java.nio.charset.Charset;
 // T is either HttpURLConnection or HttpsURLConnection
 public class JSONDownloader {
 
-    public static class http {
+    public class http {
 
-        static HttpURLConnection connection;
+        HttpURLConnection connection;
 
         //http://stackoverflow.com/questions/4308554/simplest-way-to-read-json-from-a-url-in-java
-        public static JSONArray readJsonFromUrl(String authString, String url) throws IOException, JSONException, EyebrowsError {
+        public JSONArray readJsonFromUrl(String authString, String url) throws IOException, JSONException, EyebrowsError {
             createConnection(url);
             Log.d("JSONDownloader", "Class is: " + connection.getClass().toString());
             connection.setRequestProperty("Accept", "application/json");
@@ -49,14 +49,14 @@ public class JSONDownloader {
                 is.close();
             }
         }
-        private static void createConnection(String url) throws IOException {
+        private void createConnection(String url) throws IOException {
             connection = (HttpURLConnection) new URL(url).openConnection();
         }
     }
 
-    public static class https extends http {
-        static HttpsURLConnection connection;
-        private static void createConnection(String url) throws IOException {
+    public class https extends http {
+        HttpsURLConnection connection;
+        private void createConnection(String url) throws IOException {
             connection = (HttpsURLConnection)(new URL(url).openConnection());
         }
     }

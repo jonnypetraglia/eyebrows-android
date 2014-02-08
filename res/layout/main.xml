@@ -1,8 +1,65 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<com.qweex.eyebrows.did_not_write.CustomViewPager xmlns:android="http://schemas.android.com/apk/res/android"
-           xmlns:tools="http://schemas.android.com/tools"
-           android:id="@+id/pager"
-           android:layout_width="match_parent"
-           android:layout_height="match_parent">
-</com.qweex.eyebrows.did_not_write.CustomViewPager>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+          android:layout_width="match_parent"
+          android:layout_height="match_parent" android:orientation="vertical">
+
+    <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/header_bg">
+
+        <ImageButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/up_level"
+                android:layout_gravity="center"
+                android:contentDescription="@string/up_a_level"
+                android:src="@drawable/ic_action_goright"/>
+
+        <Spinner
+                android:layout_width="0dip"
+                android:layout_height="wrap_content"
+                android:id="@+id/path_spinner"
+                android:layout_gravity="center"
+                android:layout_weight="1"
+                android:textSize="10dip"/>
+
+        <ImageButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/upload"
+                android:layout_gravity="center"
+                android:contentDescription="@string/upload"
+                android:src="@drawable/ic_action_upload"/>
+    </LinearLayout>
+
+    <com.qweex.eyebrows.did_not_write.CustomViewPager
+               android:id="@+id/pager"
+               android:layout_width="match_parent"
+               android:layout_height="wrap_content"
+               android:layout_weight="1" />
+    <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal|bottom"
+            android:id="@+id/notification"
+            android:background="@color/header_bg2"
+            android:visibility="gone">
+        <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Progress"
+                android:id="@+id/notification_text" android:layout_gravity="center"/>
+        <ProgressBar
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/notification_bar"
+                android:indeterminate="false"
+                style="?android:attr/progressBarStyleHorizontal"
+                android:indeterminateOnly="false"/>
+    </LinearLayout>
+
+</LinearLayout>

@@ -3,17 +3,15 @@ package com.qweex.eyebrows;
 import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
 import android.support.v4.app.Fragment;
 import android.text.TextUtils;
 import android.util.Base64;
 import android.util.Log;
 import android.view.*;
 import android.widget.*;
-import com.qweex.eyebrows.did_not_write.FileUploader;
-import com.qweex.eyebrows.did_not_write.JSONDownloader;
+import com.qweex.eyebrows.did_not_write.*;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -23,11 +21,9 @@ import java.net.ConnectException;
 import java.util.ArrayList;
 import java.util.List;
 
-//TODO: Notification for uploading
+// This fragment is a single folder view; it is inserted into MainActivity
 
-
-public class MainFragment extends Fragment implements Spinner.OnItemSelectedListener,
-                                                      ListView.OnItemClickListener,
+public class MainFragment extends Fragment implements ListView.OnItemClickListener,
                                                       ListView.OnItemLongClickListener {
     // Variables retrieved from MainActivity, for the connection
     String host, username, password, authString;
@@ -40,22 +36,20 @@ public class MainFragment extends Fragment implements Spinner.OnItemSelectedList
     // internal variables
     private ArrayList<String> imageListing;
     private ListView listview;
-    private boolean spinnerShown = false;
-    private List<String> spinnerVar;
+    private View LOADING, EMPTY;
 
-    @Override
-    public void onAttach(Activity activity) {
-        super.onAttach(activity);
-    }
-
+    // Called when the view is first created
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view =  inflater.inflate(R.layout.main_fragment, container, false);
 
+        // Setup ListView
+        LOADING = view.findViewById(android.R.id.progress);
+        EMPTY = view.findViewById(android.R.id.empty);
         listview = (ListView)view.findViewById(android.R.id.list);
         listview.setOnItemClickListener(this);
         listview.setOnItemLongClickListener(this);
-        listview.setEmptyView(view.findViewById(android.R.id.empty));
+        listview.setEmptyView(LOADING);
 
         // Get the data for the first time
         getData();
@@ -63,6 +57,7 @@ public class MainFragment extends Fragment implements Spinner.OnItemSelectedList
         return view;
     }
 
+    // Called when the activity is first created
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -76,56 +71,17 @@ public class MainFragment extends Fragment implements Spinner.OnItemSelectedList
         username = extras.getString("username");
         password = extras.getString("password");
 
-
         //Get the path for just this fragment
         uri_path = getArguments().getStringArrayList("uri_path");
 
-
         //Adjust data
-        spinnerVar = new ArrayList<String>(uri_path);
-        spinnerVar.add(0, getResources().getString(R.string.home));
         authString = Base64.encodeToString((username + ":" + password).getBytes(), Base64.DEFAULT);
-
-        Log.d("Eyebrows:MainFragment", "New with: " + uri_path);
     }
 
-    private Handler uploadFiles = new Handler() {
-        public void handleMessage(Message msg) {
-            if(msg.getData()==null || msg.getData().getStringArrayList("files")==null)
-                return;
-            ArrayList<String> newDownloads = msg.getData().getStringArrayList("files");
-            String uploadPath = "http" + (ssl ? "s" : "") + "://" + host + ":" + port + "/" + getPathUrl();
-            Log.d("Eyebrows:uploadFiles", uploadPath);
-            for(String f : newDownloads) {
-                Log.d("Eyebrows:UPLOADING", f);
-                FileUploader.uploadFile(getActivity(), f, uploadPath);
-            }
-        }
-    };
+    // Getter for the path
+    public List<String> getPath() { return uri_path; }
 
-    public void onStart() {
-        super.onStart();
-
-        // Setup Spinner
-        Spinner path_spinner = (Spinner) getView().findViewById(R.id.path_spinner);
-        ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<String>(getActivity(),
-                R.layout.spinner_list,
-                spinnerVar);
-        spinnerAdapter.setDropDownViewResource(R.layout.spinner);
-        path_spinner.setAdapter(spinnerAdapter);
-        path_spinner.setSelection(spinnerVar.size()-1);
-
-        path_spinner.setOnItemSelectedListener(this);
-        path_spinner.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View view, MotionEvent motionEvent) {
-                spinnerShown = true;
-                return false;
-            }
-        });
-    }
-
-    // Returns a string that is the full path
+    // Returns a string that is the full path for a URL
     public String getPathUrl() {
         List<String> temp_path = new ArrayList<String>();
         for(String s : uri_path)
@@ -133,60 +89,83 @@ public class MainFragment extends Fragment implements Spinner.OnItemSelectedList
         return TextUtils.join("/", temp_path);
     }
 
-    // Gets data from the server & populates the listview
     public void getData() {
-        imageListing = new ArrayList<String>();
-        try {
-            JSONArray folderListing;
-            String path_to_load = host + ":" + Integer.toString(port) + "/" + getPathUrl();
-            Log.d("Eyebrows:getData", "Loading URL: " + path_to_load);
-            if(ssl)
-                folderListing = JSONDownloader.http.readJsonFromUrl(authString, "https://" + path_to_load);
-            else
-                folderListing = JSONDownloader.https.readJsonFromUrl(authString, "http://" + path_to_load);
+        new DataRetrieval().execute();
+    }
 
-            for(int i=0; i<folderListing.length(); i++) {
-                if(((JSONObject)folderListing.get(i)).get("icon")=="picture-o")
-                    imageListing.add((String)((JSONObject)folderListing.get(i)).get("filename"));
+    private class DataRetrieval extends AsyncTask<Object, Object, ArrayList<JSONObject>> {
+
+        @Override
+        protected ArrayList<JSONObject> doInBackground(Object... not_used) {
+            imageListing = new ArrayList<String>();
+            ArrayList<JSONObject> folderListing = new ArrayList<JSONObject>();
+            try {
+                JSONArray folderListingJSON;
+                String path_to_load = host + ":" + Integer.toString(port) + "/" + getPathUrl();
+                Log.d("Eyebrows:getData", "Loading URL: " + path_to_load);
+                if(ssl)
+                    folderListingJSON = (new JSONDownloader().new http()).readJsonFromUrl(authString, "https://" + path_to_load);
+                else
+                    folderListingJSON = (new JSONDownloader().new https()).readJsonFromUrl(authString, "http://" + path_to_load);
+
+                for(int i=0; i<folderListingJSON.length(); i++) {
+                    if(((JSONObject)folderListingJSON.get(i)).get("icon")=="picture-o")
+                        imageListing.add((String)((JSONObject)folderListing.get(i)).get("filename"));
+                    folderListing.add((JSONObject) folderListingJSON.get(i));
+                }
+                return folderListing;
+            } catch (EyebrowsError e) {
+                Log.e("Eyebrows:HERPERR e", e.getMessage() + "!");
+                showErrorDialog(e.toString());
+            } catch (ConnectException e) {
+                Log.e("Eyebrows:HERPERR c", e.getMessage() + "!");
+                e.printStackTrace();
+                showErrorDialog(e.toString());
+            } catch (IOException e) {
+                Log.e("Eyebrows:HERPERR i", e.getMessage() + "!");
+                e.printStackTrace();
+                showErrorDialog(e.toString());
+            } catch (JSONException e) {
+                Log.e("Eyebrows:HERPERR J", e.getMessage());
+                showErrorDialog(e.toString());
+                e.printStackTrace();
             }
+            return null;
+        }
 
-            EyebrowsAdapter eba = new EyebrowsAdapter(getActivity(), 0, JsonArrayToArrayList(folderListing));
-            listview.setAdapter(eba);
-            Log.d("Eyebrows:HERP3", folderListing.toString());
-        } catch (EyebrowsError e) {
-            Log.e("Eyebrows:HERPERR e", e.getMessage() + "!");
-            showErrorDialog(e.toString());
-        } catch (ConnectException e) {
-            Log.e("Eyebrows:HERPERR c", e.getMessage() + "!");
-            e.printStackTrace();
-            showErrorDialog(e.toString());
-        } catch (IOException e) {
-            Log.e("Eyebrows:HERPERR i", e.getMessage() + "!");
-            e.printStackTrace();
-            showErrorDialog(e.toString());
-        } catch (JSONException e) {
-            Log.e("Eyebrows:HERPERR J", e.getMessage());
-            showErrorDialog(e.toString());
-            e.printStackTrace();
+        @Override
+        protected void onPreExecute() {
+            listview.setEmptyView(LOADING);
+            EMPTY.setVisibility(View.GONE);
+        }
+
+        @Override
+        protected void onPostExecute(ArrayList<JSONObject> folderListing) {
+            if(folderListing!=null && getActivity()!=null)
+            {
+                EyebrowsAdapter eba = new EyebrowsAdapter(getActivity(), 0, folderListing);
+                listview.setAdapter(eba);
+            }
+            listview.setEmptyView(EMPTY);
+            LOADING.setVisibility(View.GONE);
         }
     }
 
-    private void showErrorDialog(String msg) { ((MainActivity)getActivity()).showErrorDialog(msg);}
-
-
-
-    private List<JSONObject> JsonArrayToArrayList(JSONArray jsonArray) throws JSONException {
-        List<JSONObject> list = new ArrayList<JSONObject>();
-        for (int i=0; i<jsonArray.length(); i++) {
-            list.add((JSONObject) jsonArray.get(i));
-        }
-        return list;
+    // Shows an error dialog & quits to the server list
+    private void showErrorDialog(final String msg) {
+        if(true==true) return;
+        getActivity().runOnUiThread(new Runnable() {
+            public void run() {
+                ((MainActivity)getActivity()).showErrorDialog(msg);
+            }
+        });
     }
 
-    public boolean requiresCredentials() {
-        return username != null && password != null;
+    //ListView
+    @Override
+    public boolean onItemLongClick(AdapterView<?> adapterView, View view, int pos, long l) {
+        return false;
     }
-
 
     //ListView
     @Override
@@ -208,27 +187,5 @@ public class MainFragment extends Fragment implements Spinner.OnItemSelectedList
                             getPathUrl()));
             startActivityForResult(myIntent, 0);
         }
-    }
-
-    //ListView
-    @Override
-    public boolean onItemLongClick(AdapterView<?> adapterView, View view, int pos, long l) {
-        return false;
-    }
-
-    //Spinner
-    @Override
-    public void onItemSelected(AdapterView<?> adapterView, View view, int pos, long l) {
-        if(spinnerShown)
-        {
-            Log.d("Eyebrows:onItemSelected", pos + "!" + uri_path.size());
-            ((MainActivity)getActivity()).popFragmentsOrFinish(uri_path.size() - pos - 1);
-            spinnerShown = false;
-        }
-    }
-
-    @Override
-    public void onNothingSelected(AdapterView<?> adapterView) {
-        spinnerShown = false;
     }
 }

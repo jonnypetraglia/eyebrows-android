@@ -1,18 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
               android:orientation="horizontal"
               android:layout_width="match_parent"
-              android:layout_height="match_parent" android:background="@drawable/selector">
+              android:layout_height="match_parent"
+              android:background="@drawable/selector">
 
     <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/fileicon"
+            android:contentDescription="@string/file_icon"
             android:layout_gravity="left|center_vertical"/>
-    <TextView
+    <RelativeLayout
+            android:orientation="vertical"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/filename" android:layout_gravity="left|center_vertical" android:textColor="@android:color/black"
-            android:layout_weight="1"/>
-</LinearLayout>
+            android:layout_centerInParent="true"
+            android:layout_toRightOf="@id/fileicon">
+        <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/filename"
+                android:layout_gravity="left|bottom"
+                android:textColor="@android:color/black"/>
+        <TextView
+                android:layout_below="@id/filename"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="left|top"
+                android:id="@+id/filesize"
+                android:textColor="#AAAAAA"
+                android:textSize="10dip"/>
+    </RelativeLayout>
+</RelativeLayout>

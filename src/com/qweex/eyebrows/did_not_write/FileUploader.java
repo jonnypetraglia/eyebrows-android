@@ -1,9 +1,11 @@
 package com.qweex.eyebrows.did_not_write;
 
-import android.app.Activity;
-import android.app.ProgressDialog;
+import android.os.AsyncTask;
+import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.util.Log;
-import android.widget.Toast;
+import com.qweex.eyebrows.MainActivity;
 
 import java.io.DataOutputStream;
 import java.io.File;
@@ -13,47 +15,81 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.UUID;
 
-public class FileUploader {
+public class FileUploader extends AsyncTask<String, Object, Integer>{
 
-    static Activity activity;
+    MainActivity activity;
+    String uploadServerUri;
+    Runnable pre, post;
+    Handler prog;
 
-    // Uploads a file to the server
-    public static int uploadFile(Activity activity, String sourceFileUri, String upLoadServerUri) {
-        FileUploader.activity = activity;
-        ProgressDialog dialog = ProgressDialog.show(activity, "Uploading...", sourceFileUri);
+    public FileUploader(MainActivity a, String u,
+                        Runnable pre, Handler prog, Runnable post)
+    {
+        activity = a;
+        uploadServerUri = u;
+        this.pre  = pre;
+        this.prog = prog;
+        this.post = post;
+    }
 
-        String fileName = new File(sourceFileUri).getName();
-        int serverResponseCode = 0;
+    protected void onPreExecute() {
+        Log.d("Eyebrows", "OK UPLOADING FILES pre");
+        pre.run();
+    }
 
-        HttpURLConnection conn = null;
-        DataOutputStream dos = null;
-        String lineEnd = "\r\n";
-        String twoHyphens = "--";
-        String boundary = "*****";
-        int bytesRead, bytesAvailable, bufferSize;
-        byte[] buffer;
-        int maxBufferSize = 1 * 1024 * 1024;
-        File sourceFile = new File(sourceFileUri);
+    protected void onProgressUpdate(Object... progress) {
+        Log.d("Eyebrows", "OK UPLOADING FILES prog");
 
-        if (!sourceFile.isFile()) {
+        Bundle b = new Bundle();
+        b.putLong("totalRead", (Long) progress[0]);
+        b.putLong("fileSize", (Long) progress[1]);
+        b.putString("fileName", (String) progress[2]);
+        Message m = new Message();
+        m.setData(b);
+        prog.dispatchMessage(m);
+    }
 
-            dialog.dismiss();
-            Log.e("uploadFile", "Source File not exist :" + sourceFileUri);
-            showToast("Source File does not exist");
-            return 0;
-        }
-        else
+    protected void onPostExecute(Integer result) {
+        if(result!=200 && result !=0) // Success or Canceled (No Error)
+            activity.showErrorDialog("Error occurred: code " + result);
+
+        Log.d("Eyebrows", "OK UPLOADING FILES post");
+        post.run();
+    }
+
+    protected Integer doInBackground(String... args) {
+        Log.d("Eyebrows", "OK UPLOADING FILES do");
+        for(String sourceFileUri : args)
         {
+            String fileName = new File(sourceFileUri).getName();
+            int serverResponseCode = 0;
+
+            HttpURLConnection conn = null;
+            DataOutputStream dos = null;
+            String lineEnd = "\r\n";
+            String twoHyphens = "--";
+            String boundary = "*****";
+            int bytesRead, bytesAvailable, bufferSize;
+            byte[] buffer;
+            int maxBufferSize = 1 * 1024 * 1024;
+            File sourceFile = new File(sourceFileUri);
+
+            if (!sourceFile.isFile()) {
+
+                Log.e("uploadFile", "Source File not exist :" + sourceFileUri);
+                return -1;
+            }
             try {
                 // open a URL connection to the Servlet
                 FileInputStream fileInputStream = new FileInputStream(sourceFile);
-                URL url = new URL(upLoadServerUri);
+                URL url = new URL(uploadServerUri);
 
                 // Open a HTTP  connection to  the URL
                 conn = (HttpURLConnection) url.openConnection();
                 conn.setDoInput(true); // Allow Inputs
                 conn.setDoOutput(true); // Allow Outputs
                 conn.setUseCaches(false); // Don't use a Cached Copy
+                conn.setChunkedStreamingMode(1024); //Avoid Out of Memory error
                 conn.setRequestMethod("POST");
                 conn.setRequestProperty("Connection", "Keep-Alive");
                 conn.setRequestProperty("ENCTYPE", "multipart/form-data");
@@ -88,8 +124,18 @@ public class FileUploader {
                 long filesize = sourceFile.length();
                 long totalRead = 0;
                 while (bytesRead > 0) {
+                    if(this.isCancelled())
+                    {
+                        //close the streams //
+                        fileInputStream.close();
+                        dos.flush();
+                        dos.close();
+                        return 0;
+                    }
+
                     totalRead += bytesRead;
-                    Log.w("Eyebrows:bytesRead", (int)(totalRead*100/filesize) + " = " + totalRead + " of " + filesize);
+                    Log.w("Eyebrows:bytesRead", (int) (totalRead * 100 / filesize) + " = " + totalRead + " of " + filesize);
+                    this.publishProgress(totalRead, filesize, fileName);
                     dos.write(buffer, 0, bufferSize);
                     bytesAvailable = fileInputStream.available();
                     bufferSize = Math.min(bytesAvailable, maxBufferSize);
@@ -107,42 +153,21 @@ public class FileUploader {
                 Log.i("uploadFile", "HTTP Response is : "
                         + serverResponseMessage + ": " + serverResponseCode);
 
-                if(serverResponseCode == 200){
-                    showToast("File Upload Completed.");
-                }
-
                 //close the streams //
                 fileInputStream.close();
                 dos.flush();
                 dos.close();
+                return serverResponseCode;
 
             } catch (MalformedURLException ex) {
-
-                dialog.dismiss();
                 ex.printStackTrace();
-                showToast("MalformedURLException");
                 Log.e("Upload file to server", "error: " + ex.getMessage(), ex);
             } catch (Exception e) {
-
-                dialog.dismiss();
                 e.printStackTrace();
-
-                showToast("Got Exception : see logcat ");
                 Log.e("Upload file to server Exception", "Exception : "
                         + e.getMessage(), e);
             }
-            dialog.dismiss();
-            return serverResponseCode;
-
-        } // End else block
-    }
-
-    // Shows a toast. TOAAAAAAST
-    static void showToast(final String msg) {
-        activity.runOnUiThread(new Runnable() {
-            public void run() {
-                Toast.makeText(activity, msg, Toast.LENGTH_SHORT);
-            }
-        });
+        }
+        return -1;
     }
 }

@@ -3,67 +3,144 @@ package com.qweex.eyebrows;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.v4.app.*;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
-import android.view.KeyEvent;
-import android.view.Menu;
-import android.view.MenuItem;
+import android.view.*;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+import android.widget.*;
 import com.qweex.eyebrows.did_not_write.*;
+import com.qweex.utils.FilePickerDialog;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MainActivity extends FragmentActivity {
+// This is the class that creates and manages the fragments for listing files.
+// It also contains things like the navbar and the notification bar.
+
+public class MainActivity extends FragmentActivity implements Spinner.OnItemSelectedListener {
 
     Bundle extras;
-    List<Fragment> fragments = new ArrayList<Fragment>();
-    FragmentStatePagerAdapter adapter;
+    List<MainFragment> fragments = new ArrayList<MainFragment>();
     CustomViewPager pager;
+    String HOME;
+    Spinner path_spinner;
+    boolean spinnerIsLoading = true;
+    FileUploader uploader;
 
+    // Called when activity is created
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
-
+        HOME = getResources().getString(R.string.home);
 
         extras = getIntent().getExtras();
-        Log.e("Eyebrows:Starting", "Setting Bundle is " + extras);
-        extras.getString("herp");
-
-        // Setup the fragments, defining the number of fragments, the screens and titles.
-        adapter = new FragmentStatePagerAdapter(getSupportFragmentManager()){
-            @Override
-            public int getCount() {
-                return fragments.size();
-            }
-            @Override
-            public Fragment getItem(final int position) {
-                return fragments.get(position);
-            }
-            @Override
-            public CharSequence getPageTitle(final int position) {
-                return ((MainFragment)fragments.get(position)).getPathUrl();
-            }
-            @Override
-            public int getItemPosition(Object object){
-                return PagerAdapter.POSITION_NONE;
-            }
-        };
 
         pager = (CustomViewPager)findViewById(R.id.pager);
-        //pager.setPagingEnabled(false);
+        pager.setPagingEnabled(false);
         pager.setAdapter(adapter);
         pager.setOnPageChangeListener(pageChangeListener);
+
+        // Setup Spinner
+        ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<String>(this, R.layout.spinner_list, new ArrayList<String>());
+        path_spinner = (Spinner)findViewById(R.id.path_spinner);
+        spinnerAdapter.setDropDownViewResource(R.layout.spinner);
+        path_spinner.setAdapter(spinnerAdapter);
+        path_spinner.setOnItemSelectedListener(this);
+
+        findViewById(R.id.upload).setOnClickListener(clickUpload);
+
         addFragment(new ArrayList<String>());
     }
 
-    public Bundle getExtras() {
-        Log.e("Eyebrows:Starting", "Getting Bundle is " + extras);
-        return extras;
+    // The adapter that will manage the fragments inside the ViewPager
+    FragmentStatePagerAdapter adapter = new FragmentStatePagerAdapter(getSupportFragmentManager()){
+        @Override
+        public int getCount() {
+            return fragments.size();
+        }
+        @Override
+        public Fragment getItem(final int position) {
+            return fragments.get(position);
+        }
+        @Override
+        public CharSequence getPageTitle(final int position) {
+            return fragments.get(position).getPathUrl();
+        }
+        @Override
+        public int getItemPosition(Object object){
+            return PagerAdapter.POSITION_NONE;
+        }
+    };
+
+    // Sets the spinner data; for use for by the fragments
+    public void setSpinner(List<String> spinnerContents)
+    {
+        Log.d("Eyebrows", "Setting Spinner: " + spinnerContents);
+        ArrayAdapter<String> adap = ((ArrayAdapter<String>) path_spinner.getAdapter());
+        adap.clear();
+        adap.add(HOME);
+        adap.addAll(spinnerContents);
+        adap.notifyDataSetChanged();
+        this.spinnerIsLoading = true;
+        path_spinner.setSelection(path_spinner.getCount()-1);
     }
 
+    // Used to start uploading files when the user has selected them from the FilePickerDialog
+    private Handler uploadFilesHandler = new Handler() {
+        public void handleMessage(Message msg) {
+            if(msg.getData()==null || msg.getData().getStringArrayList("files")==null)
+                return;
+            Log.d("Eyebrows", "OK UPLOADING FILES");
+            ArrayList<String> newUploads = msg.getData().getStringArrayList("files");
+            String uploadPath = "http" +
+                    (extras.getBoolean("ssl") ? "s" : "") + "://" + extras.getString("host") + ":" + extras.getInt("port") + "/" +
+                    msg.getData().getString("uploadPath");
+            uploader = new FileUploader(MainActivity.this, uploadPath,
+                    showNotification,
+                    updateNotification,
+                    hideNotification);
+            uploader.execute(newUploads.toArray(new String[newUploads.size()]));
+        }
+    };
+
+    // User clicks upload button
+    View.OnClickListener clickUpload = new View.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+            new FilePickerDialog(MainActivity.this, uploadFilesHandler);
+        }
+    };
+
+    // User clicks upload button when an upload is already going on
+    View.OnClickListener clickCancel = new View.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+            new AlertDialog.Builder(MainActivity.this)
+                    .setMessage(R.string.confirm_cancel)
+                    .setPositiveButton(android.R.string.yes, confirmCancel)
+                    .show();
+        }
+    };
+
+    // User confirms to cancel uploading
+    DialogInterface.OnClickListener confirmCancel = new DialogInterface.OnClickListener() {
+        @Override
+        public void onClick(DialogInterface dialogInterface, int i) {
+            uploader.cancel(true);
+        }
+    };
+
+    // Getter; for use by fragments
+    public Bundle getExtras() { return extras; }
+
+    // Creates options menu
     @Override
     public boolean onCreateOptionsMenu(Menu u) {
         MenuItem mu = u.add(0,0,0,"Download as ZIP");
@@ -72,6 +149,7 @@ public class MainActivity extends FragmentActivity {
         return super.onCreateOptionsMenu(u);
     }
 
+    // Called when an options menu is selected
     @Override
     public boolean onOptionsItemSelected(MenuItem item)
     {
@@ -80,7 +158,7 @@ public class MainActivity extends FragmentActivity {
             case 0: //download as zip
                 return true;
             case 1: //Refresh
-                getCurrent().getData();
+                fragments.get(fragments.size()-1).getData();
                 return true;
             case 2: //Exit to server list
                 popFragmentsOrFinish(fragments.size());
@@ -91,31 +169,26 @@ public class MainActivity extends FragmentActivity {
 
     }
 
-    private MainFragment getCurrent() {
-        return (MainFragment) fragments.get(fragments.size()-1);
-    }
-
+    // Shows an error dialog and quits the activity whenever the user acknowledges it
     public void showErrorDialog(String msg)
     {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle(R.string.error);
         builder.setMessage(msg);
         builder.setNeutralButton(android.R.string.ok, null);
-        builder.show().setOnDismissListener(closeErrorDialog);
+        builder.show().setOnDismissListener(new DialogInterface.OnDismissListener() {
+            @Override
+            public void onDismiss(DialogInterface dialogInterface) {
+                finish();
+            }
+        });
     }
 
-    private DialogInterface.OnDismissListener closeErrorDialog = new DialogInterface.OnDismissListener() {
-        @Override
-        public void onDismiss(DialogInterface dialogInterface) {
 
-            FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-            ft.remove(getCurrent());
-            ft.commit();
-        }
-    };
-
+    // Adds a fragment & switches to it
     public void addFragment(ArrayList<String> uri_path)
     {
+        this.setSpinner(uri_path);
         MainFragment mf = new MainFragment();
         Bundle arg = new Bundle();
         arg.putStringArrayList("uri_path", uri_path);
@@ -125,6 +198,7 @@ public class MainActivity extends FragmentActivity {
         pager.setCurrentItem(fragments.size()-1, true);
     }
 
+    // Pops a fragment off or if there is only 1 fragment, finishes
     public void popFragmentsOrFinish(int howmany)
     {
         Log.d("Eyebrows:pop", "Size: " + fragments.size() + ", popping " + howmany);
@@ -135,6 +209,7 @@ public class MainActivity extends FragmentActivity {
         }
     }
 
+    // Override back button
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if(keyCode == KeyEvent.KEYCODE_BACK) {
@@ -144,6 +219,7 @@ public class MainActivity extends FragmentActivity {
         return super.onKeyDown(keyCode, event);
     }
 
+    // Pops off all the fragments after the one selected
     ViewPager.OnPageChangeListener pageChangeListener = new ViewPager.SimpleOnPageChangeListener() {
         @Override
         public void onPageSelected(int position) {
@@ -153,8 +229,76 @@ public class MainActivity extends FragmentActivity {
                     Log.d("Eyebrows", "Popping " + fragments.size());
                     fragments.remove(fragments.size()-1);
                 }
+                setSpinner(fragments.get(fragments.size()-1).getPath());
                 pager.getAdapter().notifyDataSetChanged();
             }
         }
     };
+
+    // Shows the notification bar
+    public Runnable showNotification = new Runnable() {
+        public void run() {
+            Animation anim = AnimationUtils.loadAnimation(MainActivity.this, R.anim.slide_out_bottom);
+            ((TextView)findViewById(R.id.notification_text)).setText("");
+            ((ProgressBar)findViewById(R.id.notification_bar)).setProgress(0);
+            findViewById(R.id.notification).setVisibility(View.VISIBLE);
+            findViewById(R.id.notification).startAnimation(anim);
+
+            ((ImageButton)findViewById(R.id.upload)).setImageResource(R.drawable.ic_action_cancel);
+            ((ImageButton)findViewById(R.id.upload)).setOnClickListener(clickCancel);
+        }
+    };
+
+    // Hides the notification bar
+    public Runnable hideNotification = new Runnable() {
+        public void run() {
+            Animation anim = AnimationUtils.loadAnimation(MainActivity.this, R.anim.slide_out_bottom);
+            findViewById(R.id.notification).setVisibility(View.GONE);
+            findViewById(R.id.notification).startAnimation(anim);
+
+
+            ((ImageButton)findViewById(R.id.upload)).setImageResource(R.drawable.ic_action_upload);
+            ((ImageButton)findViewById(R.id.upload)).setOnClickListener(clickUpload);
+        }
+    };
+
+    // Updates the notification bar
+    public Handler updateNotification = new Handler() {
+        public void handleMessage(Message m) {
+            Long part = m.getData().getLong("totalRead");
+            Long whole = m.getData().getLong("fileSize");
+            String filename = m.getData().getString("fileName");
+
+            TextView text = (TextView) findViewById(R.id.notification_text);
+            ProgressBar bar = (ProgressBar) findViewById(R.id.notification_bar);
+
+            bar.setProgress((int)(part/100));
+            bar.setMax((int)(whole/100));
+            text.setText(filename);
+        }
+    };
+
+    // Spinner
+    @Override
+    public void onItemSelected(AdapterView<?> adapterView, View view, int pos, long l) {
+        if(!spinnerIsLoading)
+            popFragmentsOrFinish(path_spinner.getCount() - pos - 1);
+        spinnerIsLoading = false;
+    }
+
+    // Spinner
+    @Override
+    public void onNothingSelected(AdapterView<?> adapterView) {}
+
+    // Utility
+    public static final DecimalFormat twoDec = new DecimalFormat("0.00");
+    private static final String[] SUFFIXES = new String[] {"", "K", "M", "G", "T"};
+    public static String formatBytes(long input)
+    {
+        double temp = input;
+        int i;
+        for(i=0; temp>5000; i++)
+            temp/=1024;
+        return (twoDec.format(temp) + " " + SUFFIXES[i] + "B");
+    }
 }

@@ -2,6 +2,7 @@ package com.qweex.eyebrows;
 
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -45,7 +46,7 @@ public class EyebrowsAdapter extends ArrayAdapter<JSONObject> {
     public View getView(int pos, View convertView, ViewGroup parent)
     {
         String name = null, icon = null;
-        long time, size;
+        long time, size = 0;
 
 
         JSONObject want = fileList.get(pos);
@@ -61,16 +62,23 @@ public class EyebrowsAdapter extends ArrayAdapter<JSONObject> {
             convertView = ((LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE)).inflate(RES_ID, null, false);
 
         ((TextView)convertView.findViewById(R.id.filename)).setText(name);
+        ((TextView)convertView.findViewById(R.id.filesize)).setText(MainActivity.formatBytes(size));
 
 
         ImageView iv = ((ImageView)convertView.findViewById(R.id.fileicon));
         if(iconHash.containsKey(icon)) {
             iv.setTag(iconHash.get(icon));
             iv.setImageDrawable(context.getResources().getDrawable(iconHash.get(icon)));
+
+            if(iconHash.get(icon)==R.drawable.ic_action_folder_closed)
+                convertView.findViewById(R.id.filesize).setVisibility(View.GONE);
+            else
+                convertView.findViewById(R.id.filesize).setVisibility(View.VISIBLE);
         }
         else {
             iv.setTag(R.drawable.ic_action_tablet);
             iv.setImageDrawable(context.getResources().getDrawable(R.drawable.ic_action_tablet));
+            convertView.findViewById(R.id.filesize).setVisibility(View.VISIBLE);
         }
         return convertView;
     }

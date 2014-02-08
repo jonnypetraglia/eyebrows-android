@@ -45,16 +45,24 @@ import com.qweex.eyebrows.R;
 
 public class FilePickerDialog {
 
+    static ArrayList<String> last_path;
     ListView listview;
-    ArrayList<String> path = new ArrayList<String>();
+    ArrayList<String> path;
     List<Triplet<String,Boolean,Boolean>> tripletList;
     Handler callback;
     TextView pathView;
 
+    // Constructor: default startFolder to the root of the external memory
     public FilePickerDialog(Context context, Handler callback) {
+        this(context, callback, new ArrayList<String>());
+    }
+
+    // Constructor
+    public FilePickerDialog(Context context, Handler callback, ArrayList<String> startFolder) {
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
         builder.setTitle(R.string.upload_files);
         this.callback = callback;
+        path = startFolder;
 
         getTripletList();
         FilePickerAdapter adap = new FilePickerAdapter(context, R.layout.file_chooser_item, R.id.filename, tripletList);
@@ -126,11 +134,12 @@ public class FilePickerDialog {
 
             b.putStringArrayList("files", files);
             m.setData(b);
+            last_path = new ArrayList<String>(path);
             callback.dispatchMessage(m);
         }
     };
 
-    // Sends an empty message to the callback if the user cancels.
+    // Sends an empty message to the callback if the user cancels
     private DialogInterface.OnCancelListener cancel = new DialogInterface.OnCancelListener() {
         @Override
         public void onCancel(DialogInterface dialogInterface) {
@@ -138,6 +147,7 @@ public class FilePickerDialog {
         }
     };
 
+    // Click a folder so load it
     private ListView.OnItemClickListener clickFolder = new ListView.OnItemClickListener() {
 
         @Override
@@ -152,11 +162,11 @@ public class FilePickerDialog {
             fpa.clear();
             getTripletList();
             fpa.addAll(tripletList);
-            listview.scrollTo(0,0);
+            listview.setSelectionAfterHeaderView();
         }
     };
 
-    // Handles the toggling of the "checked" status
+    // Click a file
     private View.OnClickListener clickCheck = new View.OnClickListener() {
 
         @Override
