@@ -15,8 +15,8 @@ public class EyebrowsError extends Exception {
         msgs.put(404, "404");
     }
 
-    public EyebrowsError(int errorCode, MainActivity a) {
-        super(errorCode == 401 && a.requiresCredentials() ? msgs.get(-401) : msgs.get(errorCode));
+    public EyebrowsError(int errorCode, boolean requiresCredentials) {
+        super(errorCode == 401 && requiresCredentials ? msgs.get(-401) : msgs.get(errorCode));
     }
 
 }

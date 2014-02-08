@@ -1,6 +1,7 @@
 package com.qweex.eyebrows;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -8,7 +9,6 @@ import android.widget.CheckBox;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.util.ArrayList;
 
 public class CreateServer extends Activity implements View.OnClickListener{
     @Override
@@ -28,6 +28,7 @@ public class CreateServer extends Activity implements View.OnClickListener{
 
     @Override
     public void onClick(View view) {
+        Bundle bundle = new Bundle();
         try {
             String host = ((TextView)findViewById(R.id.host)).getText().toString();
             if(host.isEmpty())
@@ -37,11 +38,20 @@ public class CreateServer extends Activity implements View.OnClickListener{
             String username = ((TextView)findViewById(R.id.username)).getText().toString();
             String password = ((TextView)findViewById(R.id.password)).getText().toString();
 
-            MainActivity.startNew(this, host, port, ssl, username, password, new ArrayList<String>());
+            bundle.putString("host", host);
+            bundle.putInt("port", port);
+            bundle.putBoolean("ssl", ssl);
+            bundle.putString("username", username);
+            bundle.putString("password", password);
         } catch(Exception nfe) {
-            Log.d("Eyebrows:createServer", "Insufficient");
+            Log.e("Eyebrows:createServer", "Insufficient: " + nfe.toString());
             Toast.makeText(view.getContext(), R.string.insufficient_info, Toast.LENGTH_SHORT);
+            return;
         }
 
+        Log.e("Eyebrows:Starting", "Creating Bundle is " + bundle);
+        Intent intent = new Intent(CreateServer.this, MainActivity.class);
+        intent.putExtras(bundle);
+        startActivity(intent);
     }
 }
