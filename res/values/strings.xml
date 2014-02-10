@@ -36,4 +36,14 @@
     <string name="download_as_zip">Download as ZIP</string>
     <string name="refresh">Refresh</string>
     <string name="exit">Exit to Server List</string>
+
+    <string name="use_master_password">Use Master Password</string>
+    <string name="change_master_password">Change Master Password</string>
+    <string name="preferences">Preferences</string>
+    <string name="advanced_options">Advanced Options</string>
+
+    <string name="current_password">Current Password</string>
+    <string name="confirm_password">Confirm Password</string>
+    <string name="unlock">Unlock</string>
+    <string name="incorrect_password">Incorrect Password</string>
 </resources>

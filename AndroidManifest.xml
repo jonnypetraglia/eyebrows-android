@@ -9,7 +9,7 @@
     <application android:label="@string/app_name" android:icon="@drawable/ic_launcher">
         <activity android:name="ServerList"
                   android:label="@string/app_name"
-                  android:theme="@style/Eyebrows">
+                  >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
                 <category android:name="android.intent.category.LAUNCHER"/>
@@ -19,5 +19,9 @@
         <activity android:name="CreateServer"  android:theme="@style/Eyebrows"/>
         <activity android:name="AboutActivity" android:theme="@style/NoActionBar"/>
         <activity android:name="PictureViewer" android:theme="@style/FullNoActionBar"/>
+        <activity android:name="UserConfig"    android:theme="@style/EyebrowsNoEditTheme"
+                  android:windowSoftInputMode="adjustResize"/>
+        <activity android:name="UnlockApp"     android:theme="@style/Eyebrows"
+                  android:windowSoftInputMode="adjustResize"/>
     </application>
 </manifest>

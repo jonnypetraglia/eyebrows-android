@@ -1,0 +1,37 @@
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+                  xmlns:custom="http://schemas.android.com/apk/res-auto">
+
+    <CheckBoxPreference android:key="use_master_password"
+                    android:title="@string/use_master_password" />
+
+    <Preference android:key="change_master_password"
+                    android:dependency="use_master_password"
+                    android:title="@string/change_master_password"/>
+
+    <PreferenceScreen
+                    android:title="@string/advanced_options"
+                    android:key="advanced">
+
+        <ListPreference android:key="algorithm"
+                        android:title="@string/algorithm"
+                        android:entries="@array/algorithms" />
+
+        <ListPreference android:key="key_size"
+                        android:title="@string/key_size"
+                        android:entries="@array/key_sizes" />
+
+        <com.lukehorvat.NumberPickerDialogPreference android:key="salt_length"
+                        android:defaultValue="20"
+                        android:dialogMessage="Please select the salt length"
+                        android:max="1000"
+                        android:title="@string/salt_length"
+                        custom:min="1" />
+
+        <com.lukehorvat.NumberPickerDialogPreference android:key="iteration_count"
+                        android:defaultValue="1000"
+                        android:dialogMessage="Please select number of iterations"
+                        android:max="100000"
+                        android:title="@string/number_of_iterations"
+                        custom:min="100" />
+    </PreferenceScreen>
+</PreferenceScreen>

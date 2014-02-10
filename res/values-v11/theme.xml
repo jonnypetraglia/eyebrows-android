@@ -8,10 +8,10 @@
            parent="@android:style/Theme.DeviceDefault.NoActionBar.Fullscreen">
     </style>
 
-    <style name="Eyebrows"
-           parent="@android:style/Theme.DeviceDefault">
+    <style name="Eyebrows" parent="EyebrowsNoEditTheme">
         <item name="android:editTextStyle">@style/EditTheme</item>
-
+    </style>
+    <style name="EyebrowsNoEditTheme" parent="@android:style/Theme.DeviceDefault">
     </style>
 
 

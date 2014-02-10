@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="algorithm">Algorithm</string>
+    <string name="key_size">Key Size</string>
+    <string name="salt_length">Salt Length</string>
+    <string name="number_of_iterations">Number Of Iterations</string>
+
+    <string-array name="algorithms">
+        <item>AES</item>
+    </string-array>
+    <string-array name="key_sizes">
+        <item>128</item>
+        <item>192</item>
+        <item>256</item>
+    </string-array>
+</resources>

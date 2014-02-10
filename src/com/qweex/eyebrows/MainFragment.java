@@ -7,7 +7,6 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.text.TextUtils;
-import android.util.Base64;
 import android.util.Log;
 import android.view.*;
 import android.widget.*;
@@ -28,7 +27,7 @@ import java.util.List;
 public class MainFragment extends Fragment implements ListView.OnItemClickListener,
                                                       ListView.OnItemLongClickListener {
     // Variables retrieved from MainActivity, for the connection
-    String host, username, password, authString;
+    String host, auth;
     int port;
     boolean ssl;
 
@@ -70,14 +69,10 @@ public class MainFragment extends Fragment implements ListView.OnItemClickListen
         host = extras.getString("host");
         port = extras.getInt("port");
         ssl = extras.getBoolean("ssl");
-        username = extras.getString("username");
-        password = extras.getString("password");
+        auth = extras.getString("auth");
 
         //Get the path for just this fragment
         uri_path = getArguments().getStringArrayList("uri_path");
-
-        //Adjust data
-        authString = Base64.encodeToString((username + ":" + password).getBytes(), Base64.DEFAULT);
     }
 
     // Getter for the path
@@ -106,9 +101,9 @@ public class MainFragment extends Fragment implements ListView.OnItemClickListen
                 String path_to_load = host + ":" + Integer.toString(port) + "/" + getPathUrl();
                 Log.d("Eyebrows:getData", "Loading URL: " + path_to_load);
                 if(ssl)
-                    folderListingJSON = (new JSONDownloader().new http()).readJsonFromUrl(authString, "https://" + path_to_load);
+                    folderListingJSON = (new JSONDownloader().new http()).readJsonFromUrl(auth, "https://" + path_to_load);
                 else
-                    folderListingJSON = (new JSONDownloader().new https()).readJsonFromUrl(authString, "http://" + path_to_load);
+                    folderListingJSON = (new JSONDownloader().new https()).readJsonFromUrl(auth, "http://" + path_to_load);
 
                 for(int i=0; i<folderListingJSON.length(); i++) {
                     JSONObject j = (JSONObject) folderListingJSON.get(i);
@@ -156,7 +151,6 @@ public class MainFragment extends Fragment implements ListView.OnItemClickListen
 
     // Shows an error dialog & quits to the server list
     private void showErrorDialog(final String msg) {
-        if(true==true) return;
         getActivity().runOnUiThread(new Runnable() {
             public void run() {
                 ((MainActivity)getActivity()).showErrorDialog(msg);
@@ -231,7 +225,7 @@ public class MainFragment extends Fragment implements ListView.OnItemClickListen
                 b.putStringArrayList("images", imageListing);
                 b.putString("path", getBaseUrl());
                 b.putString("filename", filename);
-                b.putString("authString", authString);
+                b.putString("authString", auth);
                 b.putBoolean("ssl", ssl);
                 i.putExtras(b);
                 startActivity(i);

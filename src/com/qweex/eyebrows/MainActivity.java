@@ -41,6 +41,7 @@ public class MainActivity extends FragmentActivity implements Spinner.OnItemSele
         HOME = getResources().getString(R.string.home);
 
         extras = getIntent().getExtras();
+        setTitle(extras.getString("name"));
 
         pager = (CustomViewPager)findViewById(R.id.pager);
         pager.setPagingEnabled(false);
