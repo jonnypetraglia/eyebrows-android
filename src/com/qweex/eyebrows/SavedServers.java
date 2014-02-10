@@ -10,8 +10,6 @@ import android.os.Bundle;
 import android.util.Log;
 import com.qweex.utils.Crypt;
 
-import java.util.Set;
-
 
 /********************* DB stuff for getting/setting saved servers *********************/
 public class SavedServers {
@@ -33,7 +31,7 @@ public class SavedServers {
         Log.d("Eyebrows", "Initialized DB; " + getAll().getCount());
     }
 
-    public static Cursor getAll() {
+    public static synchronized Cursor getAll() {
         open();
         Cursor c = database.query(DATABASE_TABLE, new String[]{"_id", "name", "host", "port", "ssl", "auth"},
                 null, null, null, null, null);
@@ -42,7 +40,7 @@ public class SavedServers {
         return c;
     }
 
-    public static Bundle get(String name) {
+    public static synchronized Bundle get(String name) {
         open();
         Cursor c = database.query(DATABASE_TABLE, new String[]{"_id", "name", "host", "port", "ssl", "auth"},
                 "name=?", new String[] {name}, null, null, null);
@@ -60,13 +58,13 @@ public class SavedServers {
         return b;
     }
 
-    public static void remove(String name) {
+    public static synchronized void remove(String name) {
         open();
         database.delete(DATABASE_TABLE, "name=?", new String[] {name});
         close();
     }
 
-    public static boolean add(Context c, Bundle values) {
+    public static synchronized boolean add(Context c, Bundle values) {
         try {
             open();
             ContentValues newFav = new ContentValues();
@@ -92,7 +90,7 @@ public class SavedServers {
     }
 
     //true if successful
-    public static boolean update(Context c, long id, Bundle values) {
+    public static synchronized boolean update(Context c, long id, Bundle values) {
         try {
             open();
             String name=values.getString("name");

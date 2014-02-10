@@ -6,15 +6,24 @@ import android.app.ListActivity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.database.Cursor;
 import android.os.Bundle;
+import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.*;
 import android.widget.*;
 import com.qweex.utils.Crypt;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.Map;
 
 public class ServerList extends ListActivity implements AdapterView.OnItemLongClickListener {
     LongClickMenu longClickMenu;
+    Map<String, JSONObject> statuses;
+    boolean isActive = true;
+    StatusUpdater updater;
 
     private void initiliazeApp() {
         SavedServers.initialize(this);
@@ -47,15 +56,23 @@ public class ServerList extends ListActivity implements AdapterView.OnItemLongCl
         getListView().setDividerHeight(3);
 
         longClickMenu = new LongClickMenu(this);
+        mHandler.post(refresher);
     }
 
     // Update the list of the user renamed a server
     @Override
     public void onResume() {
         super.onResume();
-        setListAdapter(new SimpleCursorAdapter(this, R.layout.server_item,
+        isActive = true;
+        setListAdapter(new StatusAdapter(this, R.layout.server_item,
                 SavedServers.getAll(),
-                new String[] {"name"}, new int[] {android.R.id.text1}));
+                new String[]{"name"}, new int[]{android.R.id.text1}, SimpleCursorAdapter.FLAG_AUTO_REQUERY));
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        isActive = false;
     }
 
 
@@ -171,4 +188,59 @@ public class ServerList extends ListActivity implements AdapterView.OnItemLongCl
         }
     }
 
+    //Called from StatusUpdater; updates the statuses and refreshes the listview
+    public void updateStatuses(Map<String, JSONObject> statuses) {
+        this.statuses = statuses;
+        ((CursorAdapter)getListAdapter()).notifyDataSetChanged();
+        updater = null;
+    }
+
+    Handler mHandler = new Handler();
+    Runnable refresher = new Runnable()
+    {
+        @Override
+        public void run() {
+            if(isActive && updater == null) {
+                updater = new StatusUpdater(ServerList.this);
+                updater.execute();
+            }
+            mHandler.postDelayed(refresher, 1000*60);
+        }
+    };
+
+    //Basically a SimpleCursorAdapter with tiny adjustments for the status dots
+    class StatusAdapter extends SimpleCursorAdapter {
+
+        int layout;
+        String[] from;
+        int[] to;
+        Cursor c;
+        public StatusAdapter(Context context, int layout, Cursor c, String[] from, int[] to, int flags) {
+            super(context, layout, c, from, to, flags);
+            this.layout = layout;
+            this.from = from;
+            this.to = to;
+            this.c = c;
+        }
+
+        @Override
+        public View getView(int position, View convertView, ViewGroup parent) {
+            convertView = super.getView(position, convertView, parent);
+
+            String name = ((TextView)convertView.findViewById(android.R.id.text1)).getText().toString();
+
+            ImageView status = (ImageView) convertView.findViewById(R.id.status);
+            if(statuses!=null && statuses.containsKey(name)) {
+                Log.d("asdf", "Status : " + statuses.get(name));
+                if(statuses.get(name)==null)
+                    status.setImageDrawable(getResources().getDrawable(R.drawable.status_bad));
+                else
+                    status.setImageDrawable(getResources().getDrawable(R.drawable.status_good));
+            } else {
+                status.setImageDrawable(getResources().getDrawable(R.drawable.status_meh));
+            }
+
+            return convertView;
+        }
+    }
 }

@@ -5,6 +5,7 @@ import android.util.Log;
 import com.qweex.eyebrows.EyebrowsError;
 import org.json.JSONArray;
 import org.json.JSONException;
+import org.json.JSONObject;
 
 import javax.net.ssl.HttpsURLConnection;
 import java.io.BufferedReader;
@@ -14,6 +15,8 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.Charset;
+import java.util.Iterator;
+import java.util.Map;
 
 // T is either HttpURLConnection or HttpsURLConnection
 public class JSONDownloader {
@@ -23,15 +26,20 @@ public class JSONDownloader {
         HttpURLConnection connection;
 
         //http://stackoverflow.com/questions/4308554/simplest-way-to-read-json-from-a-url-in-java
-        public JSONArray readJsonFromUrl(String authString, String url) throws IOException, JSONException, EyebrowsError {
+        //Returns either a JSONArray or JSONObject
+        public Object readJsonFromUrl(String authString, String url, Map<String, String> headers) throws IOException, JSONException, EyebrowsError {
             createConnection(url);
             Log.d("JSONDownloader", "Class is: " + connection.getClass().toString());
+            if(headers!=null)
+                for(String key : headers.keySet()) {
+                    connection.setRequestProperty(key, headers.get(key));
+                }
             connection.setRequestProperty("Accept", "application/json");
             connection.setRequestProperty("Content-Type", "application/json");
             if(authString!=null)
                 connection.setRequestProperty("Authorization", "Basic " + authString);
             int statusCode = connection.getResponseCode();
-            if(statusCode!=200)
+            if(statusCode!=200 && statusCode!=111)
                 throw new EyebrowsError(statusCode, authString!=null);
             InputStream is = connection.getInputStream();
             try {
@@ -43,8 +51,10 @@ public class JSONDownloader {
                 }
                 String jsonText = sb.toString();
                 Log.v("Eyebrows:HERP", jsonText);
-                JSONArray json = new JSONArray(jsonText);
-                return json;
+                try {
+                    return new JSONArray(jsonText);
+                } catch(JSONException e) {}
+                return new JSONObject(jsonText);
             } finally {
                 is.close();
             }

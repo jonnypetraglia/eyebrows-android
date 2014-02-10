@@ -101,9 +101,9 @@ public class MainFragment extends Fragment implements ListView.OnItemClickListen
                 String path_to_load = host + ":" + Integer.toString(port) + "/" + getPathUrl();
                 Log.d("Eyebrows:getData", "Loading URL: " + path_to_load);
                 if(ssl)
-                    folderListingJSON = (new JSONDownloader().new http()).readJsonFromUrl(auth, "https://" + path_to_load);
+                    folderListingJSON = (JSONArray) (new JSONDownloader().new http()).readJsonFromUrl(auth, "https://" + path_to_load, null);
                 else
-                    folderListingJSON = (new JSONDownloader().new https()).readJsonFromUrl(auth, "http://" + path_to_load);
+                    folderListingJSON = (JSONArray) (new JSONDownloader().new https()).readJsonFromUrl(auth, "http://" + path_to_load, null);
 
                 for(int i=0; i<folderListingJSON.length(); i++) {
                     JSONObject j = (JSONObject) folderListingJSON.get(i);
