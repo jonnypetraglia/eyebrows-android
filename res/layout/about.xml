@@ -64,6 +64,12 @@
                 android:paddingLeft="30dp"
                 android:text="@string/special_thanks_1"
                 android:textAppearance="?android:attr/textAppearanceSmall" />
+        <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/donate"
+                android:id="@+id/donate"
+                android:layout_gravity="center_horizontal"/>
 
     </LinearLayout>
 

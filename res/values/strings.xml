@@ -46,4 +46,8 @@
     <string name="confirm_password">Confirm Password</string>
     <string name="unlock">Unlock</string>
     <string name="incorrect_password">Incorrect Password</string>
+    <string name="sort_folders_first">Sort Folders First</string>
+
+    <string name="donate">Donate</string>
+    <string name="download_complete">Download complete.</string>
 </resources>

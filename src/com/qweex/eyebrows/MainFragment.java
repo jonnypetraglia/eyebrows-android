@@ -5,9 +5,12 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Message;
+import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.text.TextUtils;
 import android.util.Log;
+import android.util.Pair;
 import android.view.*;
 import android.widget.*;
 import com.qweex.eyebrows.did_not_write.*;
@@ -18,9 +21,7 @@ import org.json.JSONObject;
 import java.io.*;
 import java.net.ConnectException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 // This fragment is a single folder view; it is inserted into MainActivity
 
@@ -111,6 +112,16 @@ public class MainFragment extends Fragment implements ListView.OnItemClickListen
                     if("picture-o".equals(j.get("icon")))
                         imageListing.add((j.getString("name")));
                 }
+                if(!PreferenceManager.getDefaultSharedPreferences(MainFragment.this.getActivity()).getBoolean("sort_folders_first", true))
+                    Collections.sort(folderListing, new Comparator<JSONObject>() {
+                        @Override
+                        public int compare(JSONObject o1, JSONObject o2) {
+                            try {
+                            return o1.getString("name").toLowerCase().compareTo(o2.getString("name").toLowerCase());
+                            } catch(JSONException e) {}
+                            return 0;
+                        }
+                    });
                 return folderListing;
             } catch (EyebrowsError e) {
                 Log.e("Eyebrows:HERPERR e", e.getMessage() + "!");
@@ -126,6 +137,9 @@ public class MainFragment extends Fragment implements ListView.OnItemClickListen
             } catch (JSONException e) {
                 Log.e("Eyebrows:HERPERR J", e.getMessage());
                 showErrorDialog(e.toString());
+                e.printStackTrace();
+            }  catch (NullPointerException e) {
+                Log.e("Eyebrows:HERPERR i", e.getMessage() + "!");
                 e.printStackTrace();
             }
             return null;
@@ -176,9 +190,17 @@ public class MainFragment extends Fragment implements ListView.OnItemClickListen
                 msg.add("Size:    " + item.getString("size"));
                 download = new Button(getActivity());
                 download.setText(R.string.download);
+                download.setTag(title);
                 download.setPadding(10,10,10,10);
                 download.setTag(title);
-                download.setOnClickListener(downloadFromPopup);
+                download.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        ArrayList<String> derp = new ArrayList<String>();
+                        derp.add((String) view.getTag());
+                        download(derp, true);
+                    }
+                });
             }
         } catch (JSONException e) {}
           catch (NullPointerException e) {}
@@ -195,20 +217,12 @@ public class MainFragment extends Fragment implements ListView.OnItemClickListen
         return true;
     }
 
-    View.OnClickListener downloadFromPopup = new View.OnClickListener() {
-        @Override
-        public void onClick(View view) {
-            Intent myIntent = new Intent(Intent.ACTION_VIEW,
-                    Uri.parse("http" + (ssl ? "s" : "") + "://" + host + ":" + port + "/" +
-                            getPathUrl()));
-            startActivityForResult(myIntent, 0);
-        }
-    };
+
 
     //ListView
     @Override
     public void onItemClick(AdapterView<?> adapterView, View view, int pos, long l) {
-        String filename = ((TextView)view.findViewById(R.id.filename)).getText().toString();
+        final String filename = ((TextView)view.findViewById(R.id.filename)).getText().toString();
         Log.d("Eyebrows:onItemClick", filename);
 
         int res_id = (Integer)view.findViewById(R.id.fileicon).getTag();
@@ -231,12 +245,49 @@ public class MainFragment extends Fragment implements ListView.OnItemClickListen
                 startActivity(i);
                 break;
             default:
-                // DOWNLOAD
+                Log.d("Eyebrows", "Downloading: " + getBaseUrl() + " | " + getPathUrl() + " | " + filename);
+                ArrayList<String> derp = new ArrayList<String>();
+                derp.add(filename);
+                download(derp, true);
+        }
+    }
 
-                Log.d("Eyebrows", "Downloading: " + getBaseUrl() + getPathUrl() + filename);
-                Intent myIntent = new Intent(Intent.ACTION_VIEW,
-                        Uri.parse(getBaseUrl() + getPathUrl() + filename));
-                startActivityForResult(myIntent, 0);
+    public synchronized void downloadZip() {
+        MainActivity a = ((MainActivity)getActivity());
+        String subfolder;
+        if(uri_path.size()>0)
+            subfolder = uri_path.get(uri_path.size()-1);
+        else
+            subfolder = "";
+        a.zipsToDownload.add(
+                Pair.create(subfolder, getAllFiles())
+        );
+        if(a.zipDownloader==null) {
+            a.zipDownloader = new ZipDownloader(a);
+            a.zipDownloader.execute();
+        }
+    }
+
+    public void download(ArrayList<String> files, boolean showInUi) {
+        Message m = new Message();
+        Bundle b = new Bundle();
+        b.putString("downloadPath", getPathUrl());
+        b.putStringArrayList("files", files);
+        b.putBoolean("showInUi", showInUi);
+        m.setData(b);
+        ((MainActivity)getActivity()).downloadFilesHandler.sendMessage(m);
+    }
+
+    public List<String> getAllFiles() {
+        try {
+            ArrayList<String> derp = new ArrayList<String>(listview.getAdapter().getCount());
+            for(int i=0; i<listview.getAdapter().getCount(); i++) {
+                String file = ((JSONObject)listview.getAdapter().getItem(i)).getString("name");
+                derp.add(file);
+            }
+            return derp;
+        } catch(JSONException e) {
+            return null;
         }
     }
 

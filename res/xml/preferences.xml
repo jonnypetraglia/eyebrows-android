@@ -1,6 +1,10 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
                   xmlns:custom="http://schemas.android.com/apk/res-auto">
 
+    <CheckBoxPreference android:key="sort_folders_first"
+                        android:defaultValue="true"
+                        android:title="@string/sort_folders_first" />
+
     <CheckBoxPreference android:key="use_master_password"
                     android:title="@string/use_master_password" />
 

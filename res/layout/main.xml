@@ -50,19 +50,52 @@
             android:id="@+id/notification"
             android:background="@color/header_bg2"
             android:visibility="gone">
-        <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:padding="5dp"
-                android:id="@+id/notification_text" android:layout_gravity="center"/>
-        <ProgressBar
+
+        <LinearLayout
+                android:orientation="vertical"
                 android:layout_width="match_parent"
-                android:layout_height="5dip"
-                android:id="@+id/notification_bar"
-                android:indeterminate="false"
-                style="?android:attr/progressBarStyleHorizontal"
-                android:progressDrawable="@drawable/progress_bar_drawable"
-                android:indeterminateOnly="false"/>
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal|bottom"
+                android:id="@+id/notification_download"
+                android:visibility="gone">
+            <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:padding="5dp"
+                    android:id="@+id/notification_download_text" android:layout_gravity="center"/>
+            <ProgressBar
+                    android:layout_width="match_parent"
+                    android:layout_height="5dip"
+                    android:id="@+id/notification_download_bar"
+                    android:indeterminate="false"
+                    android:visibility="visible"
+                    style="?android:attr/progressBarStyleHorizontal"
+                    android:progressDrawable="@drawable/progress_bar_drawable"
+                    android:indeterminateOnly="false"/>
+        </LinearLayout>
+
+        <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal|bottom"
+                android:id="@+id/notification_upload"
+                android:visibility="gone">
+            <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:padding="5dp"
+                    android:id="@+id/notification_upload_text"
+                    android:layout_gravity="center"/>
+            <ProgressBar
+                    android:layout_width="match_parent"
+                    android:layout_height="5dip"
+                    android:id="@+id/notification_upload_bar"
+                    android:indeterminate="false"
+                    style="?android:attr/progressBarStyleHorizontal"
+                    android:progressDrawable="@drawable/progress_bar_drawable"
+                    android:indeterminateOnly="false"/>
+        </LinearLayout>
     </LinearLayout>
 
 </LinearLayout>

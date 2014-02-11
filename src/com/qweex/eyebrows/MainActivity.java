@@ -1,14 +1,19 @@
 package com.qweex.eyebrows;
 
 import android.app.AlertDialog;
-import android.content.DialogInterface;
+import android.app.DownloadManager;
+import android.content.*;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.preference.PreferenceManager;
 import android.support.v4.app.*;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.text.TextUtils;
 import android.util.Log;
+import android.util.Pair;
 import android.view.*;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
@@ -31,7 +36,11 @@ public class MainActivity extends FragmentActivity implements Spinner.OnItemSele
     String HOME;
     Spinner path_spinner;
     boolean spinnerIsLoading = true;
+    List<Pair<String, List<String>>> filesToUpload = new ArrayList<Pair<String, List<String>>>(); //<uploadServerUri, files...
     FileUploader uploader;
+    DownloadManager downloader;
+    ZipDownloader zipDownloader;
+    List<Pair<String, List<String>>> zipsToDownload = new ArrayList<Pair<String, List<String>>>();
 
     // Called when activity is created
     @Override
@@ -55,11 +64,13 @@ public class MainActivity extends FragmentActivity implements Spinner.OnItemSele
         path_spinner.setAdapter(spinnerAdapter);
         path_spinner.setOnItemSelectedListener(this);
 
-
         findViewById(R.id.upload).setOnClickListener(clickUpload);
 
         addFragment(new ArrayList<String>());
+
+        downloader = (DownloadManager)getSystemService(DOWNLOAD_SERVICE);
     }
+
 
     // The adapter that will manage the fragments inside the ViewPager
     FragmentStatePagerAdapter adapter = new FragmentStatePagerAdapter(getSupportFragmentManager()){
@@ -97,18 +108,65 @@ public class MainActivity extends FragmentActivity implements Spinner.OnItemSele
     // Used to start uploading files when the user has selected them from the FilePickerDialog
     private Handler uploadFilesHandler = new Handler() {
         public void handleMessage(Message msg) {
-            if(msg.getData()==null || msg.getData().getStringArrayList("files")==null)
+            if(msg.getData()==null || msg.getData().getStringArrayList("files")==null || uploader!=null)
                 return;
             Log.d("Eyebrows", "OK UPLOADING FILES");
-            ArrayList<String> newUploads = msg.getData().getStringArrayList("files");
+            List<String> newUploads = msg.getData().getStringArrayList("files");
             String uploadPath = "http" +
                     (extras.getBoolean("ssl") ? "s" : "") + "://" + extras.getString("host") + ":" + extras.getInt("port") + "/" +
                     msg.getData().getString("uploadPath");
-            uploader = new FileUploader(MainActivity.this, uploadPath,
-                    showNotification,
-                    updateNotification,
-                    hideNotification);
-            uploader.execute(newUploads.toArray(new String[newUploads.size()]));
+
+            filesToUpload.add(Pair.create(uploadPath, newUploads));
+
+            if(uploader==null)
+            {
+                uploader = new FileUploader(MainActivity.this,
+                        showUploadNotification,
+                        updateUploadNotification,
+                        hideUploadNotification);
+                uploader.execute();
+            }
+        }
+    };
+
+    static long download_id;
+
+    public Handler downloadFilesHandler = new Handler() {
+        public void handleMessage(Message msg) {
+            if(msg.getData()==null || msg.getData().getStringArrayList("files")==null)
+                return;
+
+            ArrayList<String> newDownloads = msg.getData().getStringArrayList("files");
+            Log.d("Eyebrows", "Downloading: " + msg.getData().getString("downloadPath") + "!");
+
+            String downloadPath = msg.getData().getString("downloadPath");
+            if(downloadPath.length()>0)
+                downloadPath = downloadPath + "/";
+            downloadPath = "http" +
+                    (extras.getBoolean("ssl") ? "s" : "") + "://" + extras.getString("host") + ":" + extras.getInt("port")
+                    + "/" + downloadPath
+                    ;
+
+            String downloadDir = PreferenceManager.getDefaultSharedPreferences(MainActivity.this).getString("download_dir", "Eyebrows");
+            for(String file : newDownloads) {
+                // Determine where it will be saved locally
+                String dest = TextUtils.join("/", new String[] {downloadDir, msg.getData().getString("downloadPath")});
+                String filename = file;
+
+
+                Uri Download_Uri = Uri.parse(downloadPath + file);
+                Log.d("Eyebrows", "Downloading: " + Download_Uri + "!");
+                DownloadManager.Request request = new DownloadManager.Request(Download_Uri);
+                request.addRequestHeader("Authorization", "Basic " + extras.getString("auth"));
+                request.setDestinationInExternalPublicDir(dest, filename);
+                //request.setDestinationInExternalFilesDir(MainActivity.this, dest, filename);
+                Log.d("Eyebrows", "Downloading to : " + dest + " | " + filename);
+                request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED);
+                request.setVisibleInDownloadsUi(true);
+                request.allowScanningByMediaScanner();
+                request.setTitle(filename);
+                download_id = downloader.enqueue(request);
+            }
         }
     };
 
@@ -120,24 +178,26 @@ public class MainActivity extends FragmentActivity implements Spinner.OnItemSele
         }
     };
 
+    /*
     // User clicks upload button when an upload is already going on
     View.OnClickListener clickCancel = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
             new AlertDialog.Builder(MainActivity.this)
                     .setMessage(R.string.confirm_cancel)
-                    .setPositiveButton(R.string.yes, confirmCancel)
+                    .setPositiveButton(R.string.yes, confirmCancelUpload)
                     .setNegativeButton(R.string.no, null)
                     .show();
         }
     };
+    */
 
     // User confirms to cancel uploading
-    DialogInterface.OnClickListener confirmCancel = new DialogInterface.OnClickListener() {
+    DialogInterface.OnClickListener confirmCancelUpload = new DialogInterface.OnClickListener() {
         @Override
         public void onClick(DialogInterface dialogInterface, int i) {
             uploader.cancel(true);
-            hideNotification.run();
+            hideUploadNotification.run();
         }
     };
 
@@ -161,6 +221,7 @@ public class MainActivity extends FragmentActivity implements Spinner.OnItemSele
         switch(item.getItemId())
         {
             case 0: //download as zip
+                fragments.get(fragments.size()-1).downloadZip();
                 return true;
             case 1: //Refresh
                 fragments.get(fragments.size()-1).getData();
@@ -260,41 +321,69 @@ public class MainActivity extends FragmentActivity implements Spinner.OnItemSele
     };
 
     // Shows the notification bar
-    public Runnable showNotification = new Runnable() {
+    public Runnable showUploadNotification = new Runnable() {
         public void run() {
             Animation anim = AnimationUtils.loadAnimation(MainActivity.this, R.anim.slide_in_top);
-            ((TextView)findViewById(R.id.notification_text)).setText("");
-            ((ProgressBar)findViewById(R.id.notification_bar)).setProgress(0);
-            findViewById(R.id.notification).setVisibility(View.VISIBLE);
-            findViewById(R.id.notification).startAnimation(anim);
+            findViewById(R.id.notification_upload).setVisibility(View.VISIBLE);
+            if(findViewById(R.id.notification).getVisibility()==View.GONE) {
+                findViewById(R.id.notification).setVisibility(View.VISIBLE);
+                findViewById(R.id.notification).startAnimation(anim);
+            } else
+                findViewById(R.id.notification_download).startAnimation(anim);
 
             ((ImageButton)findViewById(R.id.upload)).setImageResource(R.drawable.ic_action_cancel);
-            ((ImageButton)findViewById(R.id.upload)).setOnClickListener(clickCancel);
+            //((ImageButton)findViewById(R.id.upload)).setOnClickListener(clickCancel);
         }
     };
 
     // Hides the notification bar
-    public Runnable hideNotification = new Runnable() {
+    public Runnable hideUploadNotification = new Runnable() {
         public void run() {
             Animation anim = AnimationUtils.loadAnimation(MainActivity.this, R.anim.slide_out_bottom);
             findViewById(R.id.notification).setVisibility(View.GONE);
-            findViewById(R.id.notification).startAnimation(anim);
+            if(findViewById(R.id.notification_download).getVisibility()==View.GONE) {
+                findViewById(R.id.notification).setVisibility(View.GONE);
+                findViewById(R.id.notification).startAnimation(anim);
+            } else
+                findViewById(R.id.notification).startAnimation(anim);
+
+            ((TextView)findViewById(R.id.notification_upload_text)).setText("");
+            ((ProgressBar)findViewById(R.id.notification_upload_bar)).setProgress(0);
 
 
             ((ImageButton)findViewById(R.id.upload)).setImageResource(R.drawable.ic_action_upload);
-            ((ImageButton)findViewById(R.id.upload)).setOnClickListener(clickUpload);
+            //((ImageButton)findViewById(R.id.upload)).setOnClickListener(clickUpload);
+            uploader = null;
         }
     };
 
     // Updates the notification bar
-    public Handler updateNotification = new Handler() {
+    public Handler updateDownloadNotification = new Handler() {
         public void handleMessage(Message m) {
             Long part = m.getData().getLong("totalRead");
             Long whole = m.getData().getLong("fileSize");
             String filename = m.getData().getString("fileName");
 
-            TextView text = (TextView) findViewById(R.id.notification_text);
-            ProgressBar bar = (ProgressBar) findViewById(R.id.notification_bar);
+            TextView text = (TextView) findViewById(R.id.notification_download_text);
+            ProgressBar bar = (ProgressBar) findViewById(R.id.notification_download_bar);
+
+
+            Log.d("Eyebrows", part + " of " + whole);
+            bar.setProgress((int) (part / 100));
+            bar.setMax((int)(whole/100));
+            text.setText(filename);
+        }
+    };
+
+    // Updates the notification bar
+    public Handler updateUploadNotification = new Handler() {
+        public void handleMessage(Message m) {
+            Long part = m.getData().getLong("totalRead");
+            Long whole = m.getData().getLong("fileSize");
+            String filename = m.getData().getString("fileName");
+
+            TextView text = (TextView) findViewById(R.id.notification_upload_text);
+            ProgressBar bar = (ProgressBar) findViewById(R.id.notification_upload_bar);
 
 
             Log.d("Eyebrows", part + " of " + whole);
@@ -315,6 +404,25 @@ public class MainActivity extends FragmentActivity implements Spinner.OnItemSele
     // Spinner
     @Override
     public void onNothingSelected(AdapterView<?> adapterView) {}
+
+    public Pair<String, List<String>> getFileToUpload() {
+        if(filesToUpload.size()>0)
+            return filesToUpload.remove(0);
+        else
+            return null;
+    }
+
+    public Pair<String, List<String>>  getZipUrlToDownload() {
+        if(zipsToDownload.size()>0)
+            return zipsToDownload.remove(0);
+        else
+            return null;
+    }
+
+    public String getBaseUrl() {
+        return "http" + (extras.getBoolean("ssl") ? "s" : "") + "://" +
+                extras.getString("host") + ":" + extras.getInt("port") + "/";
+    }
 
     // Utility
     public static final DecimalFormat twoDec = new DecimalFormat("0.00");
