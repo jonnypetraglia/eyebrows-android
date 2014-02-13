@@ -36,6 +36,7 @@ public class UserConfig extends PreferenceActivity
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setResult(RESULT_OK);
         addPreferencesFromResource(R.xml.preferences);
         use_master = (CheckBoxPreference) getPreferenceScreen().findPreference("use_master_password");
         change_master = getPreferenceScreen().findPreference("change_master_password");
@@ -205,6 +206,12 @@ public class UserConfig extends PreferenceActivity
             use_master.setOnPreferenceClickListener(create_pass);
     }
 
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        setResult(RESULT_CANCELED);
+    }
 
     public void toast(String msg) {
         new AlertDialog.Builder(this)

@@ -26,12 +26,15 @@ public class StatusUpdater extends AsyncTask<Void, Void, Void> {
         if(c.getCount()==0)
             return null;
         c.moveToFirst();
-        Map<String,String> headers = new HashMap<String, String>();
-        headers.put("X-Info", "?");
         while(!c.isAfterLast()) {
             JSONObject j = null;
+
+            Map<String,String> headers = new HashMap<String, String>();
+
+            headers.put("Authorization", c.getString(c.getColumnIndex("auth")));
+            headers.put("Authorization", "Basic bm90YnJ5YW50OmJ1dHRz");
             try {
-                String path_to_load = c.getString(c.getColumnIndex("host")) + ":" + c.getInt(c.getColumnIndex("port"));
+                String path_to_load = c.getString(c.getColumnIndex("host")) + ":" + c.getInt(c.getColumnIndex("port")) + "/~";
                     Log.d("Loading", path_to_load);
                 if(c.getInt(c.getColumnIndex("ssl"))>1)
                     j = (JSONObject) (new JSONDownloader().new http()).readJsonFromUrl(null, "https://" + path_to_load, headers);

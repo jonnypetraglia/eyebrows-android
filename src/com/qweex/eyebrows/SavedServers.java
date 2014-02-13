@@ -10,6 +10,12 @@ import android.os.Bundle;
 import android.util.Log;
 import com.qweex.utils.Crypt;
 
+import javax.crypto.BadPaddingException;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
+
 
 /********************* DB stuff for getting/setting saved servers *********************/
 public class SavedServers {
@@ -40,20 +46,41 @@ public class SavedServers {
         return c;
     }
 
-    public static synchronized Bundle get(String name) {
+    public static synchronized Bundle get(Context context, String name) {
         open();
+        Bundle b = new Bundle();
+        try {
         Cursor c = database.query(DATABASE_TABLE, new String[]{"_id", "name", "host", "port", "ssl", "auth"},
                 "name=?", new String[] {name}, null, null, null);
         if(c.getCount()==0)
             return null;
         c.moveToFirst();
-        Bundle b = new Bundle();
         b.putLong("id", c.getLong(c.getColumnIndex("_id")));
         b.putString("name", c.getString(c.getColumnIndex("name")));
         b.putString("host", c.getString(c.getColumnIndex("host")));
         b.putInt("port", c.getInt(c.getColumnIndex("port")));
         b.putBoolean("ssl", c.getInt(c.getColumnIndex("ssl"))>0);
-        b.putString("auth", c.getString(c.getColumnIndex("auth")));
+
+        if(c.getString(c.getColumnIndex("auth")).length()>0) {
+            if(UserConfig.hasMasterPass(context))
+                b.putString("auth",
+                        Crypt.decrypt(c.getString(c.getColumnIndex("auth")), UserConfig.masterKey)
+                );
+            else
+                b.putString("auth", c.getString(c.getColumnIndex("auth")));
+        }
+
+        } catch(InvalidKeyException e) {
+            e.printStackTrace();
+        } catch (IllegalBlockSizeException e) {
+            e.printStackTrace();
+        } catch (NoSuchPaddingException e) {
+            e.printStackTrace();
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        } catch (BadPaddingException e) {
+            e.printStackTrace();
+        }
         close();
         return b;
     }

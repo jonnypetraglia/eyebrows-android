@@ -87,6 +87,7 @@ class AsyncCrypt extends AsyncTask<String, Void, Exception> {
             else
                 throw new RuntimeException("Task was CHANGING inside of doTask");
             Bundle b = new Bundle();
+            b.putString("name", c.getString(c.getColumnIndex("name")));
             b.putString("auth", auth);
             SavedServers.update(this.c, c.getLong(c.getColumnIndex("_id")), b);
             c.moveToNext();

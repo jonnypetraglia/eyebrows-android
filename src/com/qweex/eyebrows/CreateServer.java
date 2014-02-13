@@ -18,6 +18,7 @@ public class CreateServer extends Activity implements View.OnClickListener{
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setResult(RESULT_OK);
         setTitle(R.string.create_server);
         setContentView(R.layout.create_activity);
         findViewById(R.id.connect).setOnClickListener(this);
@@ -33,7 +34,7 @@ public class CreateServer extends Activity implements View.OnClickListener{
             findViewById(R.id.name).setTag("-1");
             return;
         }
-        extras = SavedServers.get(name);
+        extras = SavedServers.get(this, name);
         Log.d("ASDSADS", extras + "!");
 
         ((TextView)findViewById(R.id.host)).setText(extras.getString("host"));
@@ -83,7 +84,7 @@ public class CreateServer extends Activity implements View.OnClickListener{
         Long id = Long.parseLong((String) findViewById(R.id.name).getTag());
 
         String name = ((TextView)findViewById(R.id.name)).getText().toString();
-        if(id==-1 && view.getId()==R.id.save && SavedServers.get(name)!=null) {
+        if(id==-1 && view.getId()==R.id.save && SavedServers.get(this, name)!=null) {
             new AlertDialog.Builder(this)
                     .setTitle(R.string.error)
                     .setMessage("A saved server with this name already exists")
@@ -130,13 +131,21 @@ public class CreateServer extends Activity implements View.OnClickListener{
                 SavedServers.update(this, id, bundle);
         Intent intent = new Intent(CreateServer.this, MainActivity.class);
         intent.putExtras(bundle);
-        startActivityForResult(intent, MainActivity.class.hashCode());
+        startActivityForResult(intent, MainActivity.class.hashCode() % 0xffff);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        setResult(RESULT_CANCELED);
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        Log.d("onActivityResult", resultCode + "!" + requestCode);
-        if(requestCode==MainActivity.class.hashCode())
+        if(requestCode==MainActivity.class.hashCode() % 0xffff)
+        {
+            setResult(resultCode);
             finish();
+        }
     }
 }

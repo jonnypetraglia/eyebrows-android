@@ -12,6 +12,10 @@
                     android:dependency="use_master_password"
                     android:title="@string/change_master_password"/>
 
+    <CheckBoxPreference android:key="ask_for_pass_on_resume"
+                        android:title="@string/ask_for_pass_on_resume"
+                        android:dependency="use_master_password" />
+
     <PreferenceScreen
                     android:title="@string/advanced_options"
                     android:key="advanced">

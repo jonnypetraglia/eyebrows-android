@@ -41,16 +41,19 @@ public class MainActivity extends FragmentActivity implements Spinner.OnItemSele
     DownloadManager downloader;
     ZipDownloader zipDownloader;
     List<Pair<String, List<String>>> zipsToDownload = new ArrayList<Pair<String, List<String>>>();
+    boolean askForPassOnResume;
 
     // Called when activity is created
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setResult(RESULT_OK);
         setContentView(R.layout.main);
         HOME = getResources().getString(R.string.home);
 
         extras = getIntent().getExtras();
         setTitle(extras.getString("name"));
+        Log.d("MainActivity", "Creating with auth: " + extras.getString("auth"));
 
         pager = (CustomViewPager)findViewById(R.id.pager);
         pager.setPagingEnabled(false);
@@ -69,6 +72,34 @@ public class MainActivity extends FragmentActivity implements Spinner.OnItemSele
         addFragment(new ArrayList<String>());
 
         downloader = (DownloadManager)getSystemService(DOWNLOAD_SERVICE);
+
+        askForPassOnResume = false;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if(askForPassOnResume && UserConfig.hasMasterPass(this))
+            startActivityForResult(new Intent(this, UnlockApp.class), UnlockApp.class.hashCode() % 0xffff);
+
+        askForPassOnResume = PreferenceManager.getDefaultSharedPreferences(this).getBoolean("ask_for_pass_on_resume", false);
+        setResult(RESULT_OK);
+    }
+
+    @Override
+    protected void onActivityResult (int requestCode, int resultCode, Intent data) {
+        if(resultCode!=RESULT_OK && requestCode==UnlockApp.class.hashCode() % 0xffff) {
+            setResult(RESULT_CANCELED);
+            finish();
+        } else {
+            askForPassOnResume = false;
+        }
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        setResult(RESULT_CANCELED);
     }
 
 

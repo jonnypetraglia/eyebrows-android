@@ -24,6 +24,7 @@ public class ServerList extends ListActivity implements AdapterView.OnItemLongCl
     Map<String, JSONObject> statuses;
     boolean isActive = true;
     StatusUpdater updater;
+    boolean askForPassOnResume;
 
     private void initiliazeApp() {
         SavedServers.initialize(this);
@@ -32,11 +33,6 @@ public class ServerList extends ListActivity implements AdapterView.OnItemLongCl
         Crypt.setKeySize(PreferenceManager.getDefaultSharedPreferences(this).getInt("key_size", 256));
         Crypt.setSaltLength(PreferenceManager.getDefaultSharedPreferences(this).getInt("salt_length", 20));
         Crypt.setIterationCount(PreferenceManager.getDefaultSharedPreferences(this).getInt("iteration_count", 1000));
-
-        if(UserConfig.hasMasterPass(this))
-        {
-            startActivityForResult(new Intent(this, UnlockApp.class), UnlockApp.class.hashCode());
-        }
     }
 
     @Override
@@ -55,6 +51,7 @@ public class ServerList extends ListActivity implements AdapterView.OnItemLongCl
         getListView().setDivider(getResources().getDrawable(R.drawable.divider));
         getListView().setDividerHeight(3);
 
+        askForPassOnResume = true;
         longClickMenu = new LongClickMenu(this);
         mHandler.post(refresher);
     }
@@ -63,10 +60,31 @@ public class ServerList extends ListActivity implements AdapterView.OnItemLongCl
     @Override
     public void onResume() {
         super.onResume();
+
+        if(askForPassOnResume && UserConfig.hasMasterPass(this))
+            startActivityForResult(new Intent(this, UnlockApp.class), UnlockApp.class.hashCode() % 0xffff);
         isActive = true;
         setListAdapter(new StatusAdapter(this, R.layout.server_item,
                 SavedServers.getAll(),
                 new String[]{"name"}, new int[]{android.R.id.text1}, SimpleCursorAdapter.FLAG_AUTO_REQUERY));
+        askForPassOnResume = PreferenceManager.getDefaultSharedPreferences(this).getBoolean("ask_for_pass_on_resume", false);
+    }
+
+
+    @Override
+    protected void onActivityResult (int requestCode, int resultCode, Intent data) {
+        Log.d("onActivityResult", "resultCode !+ " + resultCode);
+        if(resultCode!=RESULT_OK && requestCode==UnlockApp.class.hashCode() % 0xffff) {
+            finish();
+        }
+        if(resultCode==RESULT_OK && (
+                        requestCode==UnlockApp.class.hashCode() % 0xffff ||
+                        requestCode==UserConfig.class.hashCode() % 0xffff ||
+                        requestCode==MainActivity.class.hashCode() % 0xffff ||
+                        requestCode==AboutActivity.class.hashCode() % 0xffff ||
+                        requestCode==CreateServer.class.hashCode() % 0xffff)) {
+            askForPassOnResume = false;
+        }
     }
 
     @Override
@@ -91,8 +109,8 @@ public class ServerList extends ListActivity implements AdapterView.OnItemLongCl
         String name = ((TextView) v.findViewById(android.R.id.text1)).getText().toString();
 
         Intent intent = new Intent(ServerList.this, MainActivity.class);
-        intent.putExtras(SavedServers.get(name));
-        startActivity(intent);
+        intent.putExtras(SavedServers.get(this, name));
+        startActivityForResult(intent, MainActivity.class.hashCode() % 0xffff);
     }
 
     // Creates options menu
@@ -110,28 +128,24 @@ public class ServerList extends ListActivity implements AdapterView.OnItemLongCl
     public boolean onOptionsItemSelected(MenuItem item)
     {
         Intent i = null;
+        Class<?> clas = null;
         switch(item.getItemId())
         {
             case 0: //connect
-                i = new Intent(ServerList.this, CreateServer.class);
+                clas = CreateServer.class;
                 break;
             case 1: //preferences
-                i = new Intent(ServerList.this, UserConfig.class);
+                clas = UserConfig.class;
                 break;
             case 2: //about
-                i = new Intent(ServerList.this, AboutActivity.class);
+                clas = AboutActivity.class;
                 break;
-
+            default:
+                return false;
         }
-        startActivity(i);
+        i = new Intent(ServerList.this, clas);
+        startActivityForResult(i, clas.hashCode() % 0xffff);
         return super.onOptionsItemSelected(item);
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        Log.d("onActivityResult", resultCode + "!" + requestCode);
-        if(requestCode==UnlockApp.class.hashCode() && resultCode!=RESULT_OK)
-            finish();
     }
 
 
@@ -168,7 +182,7 @@ public class ServerList extends ListActivity implements AdapterView.OnItemLongCl
                     Bundle b = new Bundle();
                     b.putString("name", name);
                     intent.putExtras(b);
-                    startActivity(intent);
+                    startActivityForResult(intent, CreateServer.class.hashCode() % 0xffff);
                     break;
                 case 1: //delete
                     new AlertDialog.Builder(ServerList.this)
@@ -231,7 +245,6 @@ public class ServerList extends ListActivity implements AdapterView.OnItemLongCl
 
             ImageView status = (ImageView) convertView.findViewById(R.id.status);
             if(statuses!=null && statuses.containsKey(name)) {
-                Log.d("asdf", "Status : " + statuses.get(name));
                 if(statuses.get(name)==null)
                     status.setImageDrawable(getResources().getDrawable(R.drawable.status_bad));
                 else

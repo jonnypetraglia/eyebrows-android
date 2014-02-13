@@ -50,4 +50,5 @@
 
     <string name="donate">Donate</string>
     <string name="download_complete">Download complete.</string>
+    <string name="ask_for_pass_on_resume">Ask for pass on resume</string>
 </resources>

@@ -28,4 +28,10 @@ public class AboutActivity extends Activity {
             }
         });
     }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        setResult(RESULT_CANCELED);
+    }
 }
