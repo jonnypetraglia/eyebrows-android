@@ -3,10 +3,7 @@ package com.qweex.utils;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.os.Bundle;
 import android.os.Environment;
-import android.os.Handler;
-import android.os.Message;
 import android.text.TextUtils;
 import android.util.Log;
 import android.util.TypedValue;
@@ -43,26 +40,26 @@ import java.util.List;
 import com.qweex.eyebrows.R;
 
 
-public class FilePickerDialog {
+public class MultiFileChooserDialog {
 
     static ArrayList<String> last_path;
     ListView listview;
     ArrayList<String> path;
     List<Triplet<String,Boolean,Boolean>> tripletList;
-    Handler callback;
+    OnFilesChosen callback;
     TextView pathView;
 
     // Constructor: default startFolder to the root of the external memory
-    public FilePickerDialog(Context context, Handler callback) {
-        this(context, callback, new ArrayList<String>());
+    public MultiFileChooserDialog(Context context, OnFilesChosen callback) {
+        this(context, callback, null);
     }
 
     // Constructor
-    public FilePickerDialog(Context context, Handler callback, ArrayList<String> startFolder) {
+    public MultiFileChooserDialog(Context context, OnFilesChosen callback, String startFolder) {
         AlertDialog.Builder builder = new AlertDialog.Builder(context);
-        builder.setTitle(R.string.upload_files);
+        builder.setTitle("Upload Files");
         this.callback = callback;
-        path = startFolder;
+        path = new ArrayList<String>(Arrays.asList(TextUtils.split(startFolder, "/")));
 
         getTripletList();
         FilePickerAdapter adap = new FilePickerAdapter(context, R.layout.file_chooser_item, R.id.filename, tripletList);
@@ -123,19 +120,14 @@ public class FilePickerDialog {
         @Override
         public void onClick(DialogInterface dialogInterface, int i) {
             File workingDir = new File(Environment.getExternalStorageDirectory(), TextUtils.join("/", path));
-            Message m = new Message();
-            Bundle b = new Bundle();
             ArrayList<String> files = new ArrayList<String>();
             for(Triplet<String,Boolean,Boolean> trip : tripletList) {
                 if(trip.third && trip.second) {
                     files.add(new File(workingDir, trip.first).getAbsolutePath());
                 }
             }
-
-            b.putStringArrayList("files", files);
-            m.setData(b);
             last_path = new ArrayList<String>(path);
-            callback.dispatchMessage(m);
+            callback.onFilesChosen(TextUtils.join("/", path), files);
         }
     };
 
@@ -143,7 +135,7 @@ public class FilePickerDialog {
     private DialogInterface.OnCancelListener cancel = new DialogInterface.OnCancelListener() {
         @Override
         public void onCancel(DialogInterface dialogInterface) {
-            callback.sendEmptyMessage(0);
+            callback.onFilesChosen(null, null);
         }
     };
 
@@ -242,5 +234,9 @@ public class FilePickerDialog {
         public void setFirst(T f) { first = f; }
         public void setSecond(U s) { second = s; }
         public void setThird(V t) { third = t; }
+    }
+
+    public interface OnFilesChosen {
+        public void onFilesChosen(String path, List<String> files);
     }
 }

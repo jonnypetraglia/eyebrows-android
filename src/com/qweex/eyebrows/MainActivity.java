@@ -19,7 +19,7 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.*;
 import com.qweex.eyebrows.did_not_write.*;
-import com.qweex.utils.FilePickerDialog;
+import com.qweex.utils.MultiFileChooserDialog;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -28,7 +28,7 @@ import java.util.List;
 // This is the class that creates and manages the fragments for listing files.
 // It also contains things like the navbar and the notification bar.
 
-public class MainActivity extends FragmentActivity implements Spinner.OnItemSelectedListener {
+public class MainActivity extends FragmentActivity implements Spinner.OnItemSelectedListener, MultiFileChooserDialog.OnFilesChosen {
 
     Bundle extras;
     List<MainFragment> fragments = new ArrayList<MainFragment>();
@@ -137,17 +137,14 @@ public class MainActivity extends FragmentActivity implements Spinner.OnItemSele
     }
 
     // Used to start uploading files when the user has selected them from the FilePickerDialog
-    private Handler uploadFilesHandler = new Handler() {
-        public void handleMessage(Message msg) {
-            if(msg.getData()==null || msg.getData().getStringArrayList("files")==null || uploader!=null)
-                return;
+    @Override
+    public void onFilesChosen(String path, List<String> files) {
             Log.d("Eyebrows", "OK UPLOADING FILES");
-            List<String> newUploads = msg.getData().getStringArrayList("files");
             String uploadPath = "http" +
                     (extras.getBoolean("ssl") ? "s" : "") + "://" + extras.getString("host") + ":" + extras.getInt("port") + "/" +
-                    msg.getData().getString("uploadPath");
+                    path;
 
-            filesToUpload.add(Pair.create(uploadPath, newUploads));
+            filesToUpload.add(Pair.create(uploadPath, files));
 
             if(uploader==null)
             {
@@ -157,7 +154,6 @@ public class MainActivity extends FragmentActivity implements Spinner.OnItemSele
                         hideUploadNotification);
                 uploader.execute();
             }
-        }
     };
 
     static long download_id;
@@ -205,7 +201,7 @@ public class MainActivity extends FragmentActivity implements Spinner.OnItemSele
     View.OnClickListener clickUpload = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
-            new FilePickerDialog(MainActivity.this, uploadFilesHandler);
+            new MultiFileChooserDialog(MainActivity.this, MainActivity.this);
         }
     };
 
