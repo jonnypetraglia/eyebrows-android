@@ -49,7 +49,7 @@
     </option>
   </component>
   <component name="AndroidLogFilters">
-    <option name="TOOL_WINDOW_CUSTOM_FILTER" value="result" />
+    <option name="TOOL_WINDOW_CONFIGURED_FILTER" value="Error" />
   </component>
   <component name="ChangeListManager">
     <list default="true" id="07c64050-b12e-4e44-8aae-9952bea5689c" name="Default" comment="" />
@@ -57,14 +57,14 @@
     <ignored path=".idea/workspace.xml" />
     <file path="/AndroidManifest.xml" changelist="07c64050-b12e-4e44-8aae-9952bea5689c" time="1392005551901" ignored="false" />
     <file path="/MainActivity.java" changelist="07c64050-b12e-4e44-8aae-9952bea5689c" time="1392328101545" ignored="false" />
-    <file path="/fragment.java" changelist="07c64050-b12e-4e44-8aae-9952bea5689c" time="1392087281357" ignored="false" />
+    <file path="/fragment.java" changelist="07c64050-b12e-4e44-8aae-9952bea5689c" time="1394236174213" ignored="false" />
     <file path="/EyebrowsError.java" changelist="07c64050-b12e-4e44-8aae-9952bea5689c" time="1391816863560" ignored="false" />
     <file path="/EyebrowsAdapter.java" changelist="07c64050-b12e-4e44-8aae-9952bea5689c" time="1391873710244" ignored="false" />
-    <file path="/Dummy.txt" changelist="07c64050-b12e-4e44-8aae-9952bea5689c" time="1392001849657" ignored="false" />
+    <file path="/Dummy.txt" changelist="07c64050-b12e-4e44-8aae-9952bea5689c" time="1394236813626" ignored="false" />
     <file path="/selector.xml" changelist="07c64050-b12e-4e44-8aae-9952bea5689c" time="1391694725414" ignored="false" />
     <file path="/item.xml" changelist="07c64050-b12e-4e44-8aae-9952bea5689c" time="1391851280617" ignored="false" />
     <file path="/header.xml" changelist="07c64050-b12e-4e44-8aae-9952bea5689c" time="1391709719100" ignored="false" />
-    <file path="/colors.xml" changelist="07c64050-b12e-4e44-8aae-9952bea5689c" time="1392027937369" ignored="false" />
+    <file path="/colors.xml" changelist="07c64050-b12e-4e44-8aae-9952bea5689c" time="1394238491804" ignored="false" />
     <file path="/main.xml" changelist="07c64050-b12e-4e44-8aae-9952bea5689c" time="1392066522808" ignored="false" />
     <file path="/CreateServer.java" changelist="07c64050-b12e-4e44-8aae-9952bea5689c" time="1392282287169" ignored="false" />
     <file path="/create_activity.xml" changelist="07c64050-b12e-4e44-8aae-9952bea5689c" time="1392012624365" ignored="false" />
@@ -83,7 +83,7 @@
     <file path="/slide_out_bottom.xml" changelist="07c64050-b12e-4e44-8aae-9952bea5689c" time="1391835262121" ignored="false" />
     <file path="/slide_in_top.xml" changelist="07c64050-b12e-4e44-8aae-9952bea5689c" time="1391835267720" ignored="false" />
     <file path="/FileUploader.java" changelist="07c64050-b12e-4e44-8aae-9952bea5689c" time="1392070732929" ignored="false" />
-    <file path="/MainFragment.java" changelist="07c64050-b12e-4e44-8aae-9952bea5689c" time="1392093246263" ignored="false" />
+    <file path="/MainFragment.java" changelist="07c64050-b12e-4e44-8aae-9952bea5689c" time="1394241674460" ignored="false" />
     <file path="/a.dummy" changelist="07c64050-b12e-4e44-8aae-9952bea5689c" time="1392279767453" ignored="false" />
     <file path="/progress_bar_drawable.xml" changelist="07c64050-b12e-4e44-8aae-9952bea5689c" time="1391864561998" ignored="false" />
     <file path="/PictureViewer.java" changelist="07c64050-b12e-4e44-8aae-9952bea5689c" time="1391880837703" ignored="false" />
@@ -94,7 +94,7 @@
     <file path="/ImageViewPager.java" changelist="07c64050-b12e-4e44-8aae-9952bea5689c" time="1391879665990" ignored="false" />
     <file path="/TouchImageView.java" changelist="07c64050-b12e-4e44-8aae-9952bea5689c" time="1391878575447" ignored="false" />
     <file path="/themes.xml" changelist="07c64050-b12e-4e44-8aae-9952bea5689c" time="1391880535842" ignored="false" />
-    <file path="/theme.xml" changelist="07c64050-b12e-4e44-8aae-9952bea5689c" time="1392003245915" ignored="false" />
+    <file path="/theme.xml" changelist="07c64050-b12e-4e44-8aae-9952bea5689c" time="1394237247891" ignored="false" />
     <file path="/spinner_list.xml" changelist="07c64050-b12e-4e44-8aae-9952bea5689c" time="1391882047021" ignored="false" />
     <file path="/spinner.xml" changelist="07c64050-b12e-4e44-8aae-9952bea5689c" time="1392031545640" ignored="false" />
     <file path="/DatabaseConnector.java" changelist="07c64050-b12e-4e44-8aae-9952bea5689c" time="1391885899390" ignored="false" />
@@ -119,11 +119,11 @@
     <file path="/status_meh.xml" changelist="07c64050-b12e-4e44-8aae-9952bea5689c" time="1392027996281" ignored="false" />
     <file path="/asdf.java" changelist="07c64050-b12e-4e44-8aae-9952bea5689c" time="1392071535226" ignored="false" />
     <file path="/ZipDownloader.java" changelist="07c64050-b12e-4e44-8aae-9952bea5689c" time="1392146741189" ignored="false" />
-    <file path="$PROJECT_DIR$/src/com/qweex/eyebrows/did_not_write/FileUploader.java" changelist="07c64050-b12e-4e44-8aae-9952bea5689c" time="1392145415999" ignored="false" />
     <file path="$PROJECT_DIR$/gen/com/qweex/eyebrows/R.java" changelist="07c64050-b12e-4e44-8aae-9952bea5689c" time="1392283175748" ignored="false" />
     <file path="$PROJECT_DIR$/gen/com/qweex/eyebrows/Manifest.java" changelist="07c64050-b12e-4e44-8aae-9952bea5689c" time="1392283175748" ignored="false" />
     <file path="/MultiFileChooserDialog.java" changelist="07c64050-b12e-4e44-8aae-9952bea5689c" time="1392328371808" ignored="false" />
     <file path="$PROJECT_DIR$/../QweexUtils/src/com/qweex/utils/MultiFileChooserDialog.java" changelist="07c64050-b12e-4e44-8aae-9952bea5689c" time="1392328513070" ignored="false" />
+    <file path="/download_button.xml" changelist="07c64050-b12e-4e44-8aae-9952bea5689c" time="1394237191548" ignored="false" />
     <option name="TRACKING_ENABLED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -184,7 +184,35 @@
     <favorites_list name="Eyebrows" />
   </component>
   <component name="FileEditorManager">
-    <leaf />
+    <leaf>
+      <file leaf-file-name="MainFragment.java" pinned="false" current="true" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/src/com/qweex/eyebrows/MainFragment.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="223" column="35" selection-start="8711" selection-end="8711" vertical-scroll-proportion="0.59302324">
+              <folding>
+                <element signature="imports" expanded="true" />
+                <element signature="e#2809#2817#0" expanded="true" />
+                <element signature="e#3326#3338#0" expanded="true" />
+                <element signature="e#6857#6865#0" expanded="true" />
+                <element signature="e#8026#8034#0" expanded="true" />
+                <element signature="e#10491#10499#0" expanded="true" />
+                <element signature="e#11334#11342#0" expanded="true" />
+                <element signature="e#12418#12426#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="colors.xml" pinned="false" current="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/res/values/colors.xml">
+          <provider selected="true" editor-type-id="text-editor">
+            <state line="8" column="12" selection-start="328" selection-end="328" vertical-scroll-proportion="0.0">
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+    </leaf>
   </component>
   <component name="FindManager">
     <FindUsagesManager>
@@ -194,12 +222,6 @@
   <component name="IdeDocumentHistory">
     <option name="changedFiles">
       <list>
-        <option value="$PROJECT_DIR$/MyPersonalTodo" />
-        <option value="$PROJECT_DIR$/src/com/qweex/utils/FilePickerDialog.java" />
-        <option value="$PROJECT_DIR$/src/com/qweex/utils/Triplet.java" />
-        <option value="$PROJECT_DIR$/src/com/qweex/eyebrows/MainFragment.java" />
-        <option value="$PROJECT_DIR$/src/com/qweex/eyebrows/ZipDownloader.java" />
-        <option value="$PROJECT_DIR$/src/com/qweex/eyebrows/StatusUpdater.java" />
         <option value="$PROJECT_DIR$/src/com/qweex/eyebrows/AsyncCrypt.java" />
         <option value="$PROJECT_DIR$/src/com/qweex/eyebrows/SavedServers.java" />
         <option value="$PROJECT_DIR$/res/xml/preferences.xml" />
@@ -210,11 +232,17 @@
         <option value="$PROJECT_DIR$/src/com/qweex/eyebrows/CreateServer.java" />
         <option value="$PROJECT_DIR$/src/com/qweex/eyebrows/MainActivity.java" />
         <option value="$PROJECT_DIR$/src/com/qweex/utils/MultiFileChooserDialog.java" />
+        <option value="$PROJECT_DIR$/res/layout/download_button.xml" />
+        <option value="$PROJECT_DIR$/res/values-v3/theme.xml" />
+        <option value="$PROJECT_DIR$/res/values-v11/theme.xml" />
+        <option value="$PROJECT_DIR$/src/com/qweex/eyebrows/EyebrowsAdapter.java" />
+        <option value="$PROJECT_DIR$/res/values/colors.xml" />
+        <option value="$PROJECT_DIR$/src/com/qweex/eyebrows/MainFragment.java" />
       </list>
     </option>
   </component>
   <component name="ProjectFrameBounds">
-    <option name="x" value="8" />
+    <option name="x" value="4" />
     <option name="y" value="22" />
     <option name="width" value="1276" />
     <option name="height" value="778" />
@@ -245,6 +273,7 @@
       <sortByType />
     </navigator>
     <panes>
+      <pane id="PackagesPane" />
       <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
@@ -283,10 +312,6 @@
             </PATH_ELEMENT>
             <PATH_ELEMENT>
               <option name="myItemId" value="qweex" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="utils" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
@@ -368,7 +393,6 @@
           </PATH>
         </subPane>
       </pane>
-      <pane id="PackagesPane" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -381,7 +405,7 @@
     <property name="options.lastSelected" value="project.propVCSSupport.Mappings" />
     <property name="MemberChooser.sorted" value="false" />
     <property name="recentsLimit" value="5" />
-    <property name="last_opened_file_path" value="$USER_HOME$/asdf/ImageLoader" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
     <property name="AndroidLayoutSelectedEditor" value="text-editor" />
     <property name="project.structure.side.proportion" value="0.2" />
     <property name="ANDROID_EXTENDED_DEVICE_CHOOSER_SERIALS" value="emulator-5554" />
@@ -389,13 +413,13 @@
     <property name="GoToClass.toSaveIncludeLibraries" value="false" />
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="ANDROID_EXTENDED_DEVICE_CHOOSER_AVD" value="derp" />
-    <property name="AndroidTargetDevices" value="192.168.0.101:5555" />
     <property name="restartRequiresConfirmation" value="true" />
-    <property name="FullScreen" value="false" />
+    <property name="AndroidTargetDevices" value="192.168.0.101:5555" />
     <property name="MemberChooser.showClasses" value="true" />
+    <property name="FullScreen" value="false" />
     <property name="GoToClass.includeLibraries" value="false" />
-    <property name="options.searchVisible" value="true" />
     <property name="options.splitter.details.proportions" value="0.2" />
+    <property name="options.searchVisible" value="true" />
   </component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
@@ -411,6 +435,12 @@
     </key>
   </component>
   <component name="RunManager" selected="Android Application.Eyebrows">
+    <configuration default="true" type="#org.jetbrains.idea.devkit.run.PluginConfigurationType" factoryName="Plugin">
+      <module name="" />
+      <option name="VM_PARAMETERS" value="-Xmx512m -Xms256m -XX:MaxPermSize=250m" />
+      <option name="PROGRAM_PARAMETERS" />
+      <method />
+    </configuration>
     <configuration default="true" type="AndroidTestRunConfigurationType" factoryName="Android Tests">
       <module name="" />
       <option name="TESTING_TYPE" value="0" />
@@ -435,6 +465,34 @@
       <option name="SHMEM_ADDRESS" value="javadebug" />
       <option name="HOST" value="localhost" />
       <option name="PORT" value="5005" />
+      <method />
+    </configuration>
+    <configuration default="true" type="TestNG" factoryName="TestNG">
+      <extension name="coverage" enabled="false" merge="false" sample_coverage="true" runner="idea" />
+      <module name="" />
+      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
+      <option name="ALTERNATIVE_JRE_PATH" />
+      <option name="SUITE_NAME" />
+      <option name="PACKAGE_NAME" />
+      <option name="MAIN_CLASS_NAME" />
+      <option name="METHOD_NAME" />
+      <option name="GROUP_NAME" />
+      <option name="TEST_OBJECT" value="CLASS" />
+      <option name="VM_PARAMETERS" value="-ea" />
+      <option name="PARAMETERS" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="OUTPUT_DIRECTORY" />
+      <option name="ANNOTATION_TYPE" />
+      <option name="ENV_VARIABLES" />
+      <option name="PASS_PARENT_ENVS" value="true" />
+      <option name="TEST_SEARCH_SCOPE">
+        <value defaultName="moduleWithDependencies" />
+      </option>
+      <option name="USE_DEFAULT_REPORTERS" value="false" />
+      <option name="PROPERTIES_FILE" />
+      <envs />
+      <properties />
+      <listeners />
       <method />
     </configuration>
     <configuration default="true" type="Applet" factoryName="Applet">
@@ -523,15 +581,6 @@
     <list size="1">
       <item index="0" class="java.lang.String" itemvalue="Android Application.Eyebrows" />
     </list>
-    <configuration name="&lt;template&gt;" type="TestNG" default="true" selected="false">
-      <option name="MAIN_CLASS_NAME" />
-      <option name="VM_PARAMETERS" value="-ea" />
-      <option name="PARAMETERS" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
-    </configuration>
-    <configuration name="&lt;template&gt;" type="#org.jetbrains.idea.devkit.run.PluginConfigurationType" default="true" selected="false">
-      <option name="VM_PARAMETERS" value="-Xmx512m -Xms256m -XX:MaxPermSize=250m" />
-    </configuration>
     <configuration name="&lt;template&gt;" type="WebApp" default="true" selected="false">
       <Host>localhost</Host>
       <Port>5050</Port>
@@ -547,28 +596,32 @@
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="8" y="22" width="1276" height="778" extended-state="0" />
-    <editor active="false" />
+    <frame x="4" y="22" width="1276" height="778" extended-state="0" />
+    <editor active="true" />
     <layout>
       <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="JetGradle" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
+      <window_info id="Preview" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3292683" sideWeight="0.67094016" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
-      <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
+      <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3988604" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="IDEtalk Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="11" side_tool="true" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="true" content_ui="tabs" />
+      <window_info id="IDEtalk" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
-      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32763532" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
-      <window_info id="Android" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4159544" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
+      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32674772" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
+      <window_info id="Android" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.41489363" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="SLIDING" type="SLIDING" visible="false" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.27398375" sideWeight="0.67094016" order="0" side_tool="false" content_ui="combo" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32905984" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.27398375" sideWeight="0.5851064" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32826748" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Palette&#9;" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32520324" sideWeight="0.67094016" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Designer" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32520324" sideWeight="0.67094016" order="2" side_tool="false" content_ui="tabs" />
-      <window_info id="Preview" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3292683" sideWeight="0.67094016" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32905984" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
@@ -640,53 +693,6 @@
     <option name="FILTER_TARGETS" value="false" />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/res/layout/main.xml">
-      <provider editor-type-id="android-designer">
-        <state />
-      </provider>
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="0" column="0" selection-start="0" selection-end="0" vertical-scroll-proportion="-0.9244992" />
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/com/qweex/eyebrows/ZipDownloader.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="199" column="71" selection-start="7644" selection-end="7644" vertical-scroll-proportion="0.6473354">
-          <folding>
-            <element signature="imports" expanded="true" />
-            <element signature="e#1173#1198#0" expanded="true" />
-            <element signature="e#2762#2777#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/com/qweex/eyebrows/AsyncCrypt.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="91" column="75" selection-start="3176" selection-end="3176" vertical-scroll-proportion="0.6171694">
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/com/qweex/eyebrows/SavedServers.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="60" column="21" selection-start="2356" selection-end="2356" vertical-scroll-proportion="0.43193716">
-          <folding>
-            <element signature="imports" expanded="true" />
-            <element signature="class#DatabaseOpenHelper#0;class#SavedServers#0" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/com/qweex/eyebrows/StatusUpdater.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="20" column="5" selection-start="560" selection-end="560" vertical-scroll-proportion="0.6910569">
-          <folding>
-            <element signature="imports" expanded="true" />
-            <element signature="e#448#468#0" expanded="true" />
-            <element signature="e#867#883#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/com/qweex/utils/Crypt.java">
       <provider selected="true" editor-type-id="text-editor">
         <state line="54" column="36" selection-start="2162" selection-end="2162" vertical-scroll-proportion="0.37398374">
@@ -729,23 +735,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/com/qweex/eyebrows/MainFragment.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state line="27" column="13" selection-start="740" selection-end="740" vertical-scroll-proportion="0.33333334">
-          <folding>
-            <element signature="imports" expanded="true" />
-            <element signature="e#2775#2783#0" expanded="true" />
-            <element signature="e#3292#3304#0" expanded="true" />
-            <element signature="e#6823#6831#0" expanded="true" />
-            <element signature="e#7720#7728#0" expanded="true" />
-            <element signature="method#onItemClick#0;class#MainFragment#0" expanded="false" />
-            <element signature="e#9000#9008#0" expanded="true" />
-            <element signature="e#9843#9851#0" expanded="true" />
-            <element signature="e#10927#10935#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/com/qweex/eyebrows/CreateServer.java">
       <provider selected="true" editor-type-id="text-editor">
         <state line="75" column="28" selection-start="2888" selection-end="2888" vertical-scroll-proportion="1.1553545">
@@ -771,26 +760,65 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/res/layout/download_button.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="5" column="33" selection-start="241" selection-end="241" vertical-scroll-proportion="0.19379845">
+          <folding />
+        </state>
+      </provider>
+      <provider editor-type-id="android-designer">
+        <state />
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/res/values-v3/theme.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="8" column="4" selection-start="262" selection-end="342" vertical-scroll-proportion="0.28985506">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/res/values-v11/theme.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="11" column="12" selection-start="387" selection-end="387" vertical-scroll-proportion="0.39855072">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/com/qweex/eyebrows/EyebrowsAdapter.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="48" column="13" selection-start="1576" selection-end="1576" vertical-scroll-proportion="-0.19700748">
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/src/com/qweex/eyebrows/MainActivity.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="203" column="16" selection-start="8036" selection-end="8036" vertical-scroll-proportion="0.36744186">
+        <state line="120" column="37" selection-start="4308" selection-end="4308" vertical-scroll-proportion="0.5885287">
           <folding>
             <element signature="e#1134#1148#0" expanded="true" />
-            <element signature="e#1325#1353#0" expanded="true" />
-            <element signature="e#1545#1573#0" expanded="true" />
-            <element signature="e#2336#2344#0" expanded="true" />
-            <element signature="e#7932#8113#0" expanded="true" />
-            <element signature="e#8106#8107#0" expanded="true" />
-            <element signature="e#8715#8935#0" expanded="true" />
-            <element signature="e#8928#8929#0" expanded="true" />
-            <element signature="e#10326#10508#0" expanded="true" />
-            <element signature="e#10497#10498#0" expanded="true" />
-            <element signature="e#11255#11570#0" expanded="true" />
-            <element signature="e#11547#11548#0" expanded="true" />
-            <element signature="e#13180#13930#0" expanded="true" />
-            <element signature="e#13923#13924#0" expanded="true" />
-            <element signature="e#14012#14951#0" expanded="true" />
-            <element signature="e#14944#14945#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/res/values/colors.xml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="8" column="12" selection-start="328" selection-end="328" vertical-scroll-proportion="0.0">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/com/qweex/eyebrows/MainFragment.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="223" column="35" selection-start="8711" selection-end="8711" vertical-scroll-proportion="0.59302324">
+          <folding>
+            <element signature="imports" expanded="true" />
+            <element signature="e#2809#2817#0" expanded="true" />
+            <element signature="e#3326#3338#0" expanded="true" />
+            <element signature="e#6857#6865#0" expanded="true" />
+            <element signature="e#8026#8034#0" expanded="true" />
+            <element signature="e#10491#10499#0" expanded="true" />
+            <element signature="e#11334#11342#0" expanded="true" />
+            <element signature="e#12418#12426#0" expanded="true" />
           </folding>
         </state>
       </provider>

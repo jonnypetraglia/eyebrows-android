@@ -2,6 +2,7 @@ package com.qweex.eyebrows;
 
 import android.app.AlertDialog;
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -179,6 +180,11 @@ public class MainFragment extends Fragment implements ListView.OnItemClickListen
         ArrayList<String> msg = new ArrayList<String>();
         JSONObject item = (JSONObject) listview.getAdapter().getItem(pos);
 
+        TableLayout layout = new TableLayout(getActivity());
+        layout.setOrientation(LinearLayout.VERTICAL);
+        layout.setBackgroundColor(getResources().getColor(android.R.color.white));
+        layout.setPadding(30,30,30,30);
+
         String title = null;
         Button download = null;
         try {
@@ -187,11 +193,12 @@ public class MainFragment extends Fragment implements ListView.OnItemClickListen
         try {
             if(EyebrowsAdapter.iconHash.get(item.getString("icon")) != R.drawable.ic_action_folder_closed)
             {
-                msg.add("Size:    " + item.getString("size"));
+                layout.addView(popupRow("Size:", MainActivity.formatBytes(item.getLong("size"))));
+
                 download = new Button(getActivity());
                 download.setText(R.string.download);
                 download.setTag(title);
-                download.setPadding(10,10,10,10);
+                download.setPadding(0,0,0,0);
                 download.setTag(title);
                 download.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -204,17 +211,49 @@ public class MainFragment extends Fragment implements ListView.OnItemClickListen
             }
         } catch (JSONException e) {}
           catch (NullPointerException e) {}
+
+
+        SimpleDateFormat sdf = new SimpleDateFormat("MMM dd, yyyy hh:mm a");
         try {
-            msg.add("Time:    " + new SimpleDateFormat("MMM dd, yyyy hh:mm a").format(new Date(item.getLong("time")*1000)));
+            layout.addView(popupRow("Modified:", sdf.format(new Date(item.getLong("mtime")*1000))));
         } catch (JSONException e) {}
+        try {
+            layout.addView(popupRow("Accessed:", sdf.format(new Date(item.getLong("atime")*1000))));
+        } catch (JSONException e) {}
+        try {
+            layout.addView(popupRow("Created:", sdf.format(new Date(item.getLong("ctime")*1000))));
+        } catch (JSONException e) {}
+
+        if(download!=null)
+            layout.addView(download);
 
         new AlertDialog.Builder(getActivity())
                 .setTitle(title)
-                .setMessage(TextUtils.join("\n",msg))
+                .setInverseBackgroundForced(true)
                 .setNegativeButton(android.R.string.ok, null)
-                .setView(download)
+                .setView(layout)
                 .show();
         return true;
+    }
+
+    TableRow popupRow(String colA, String colB) {
+        TableRow row = new TableRow(getActivity());
+
+        TextView header = new TextView(getActivity());
+        header.setTextColor(getResources().getColor(android.R.color.black));
+        header.setTextSize(getResources().getDisplayMetrics().density * 9f);
+        header.setText(colA);
+        header.setPadding(0, 0, 30, 0);
+        header.setTypeface(null, Typeface.BOLD);
+        row.addView(header);
+
+        TextView contents = new TextView(getActivity());
+        contents.setTextColor(getResources().getColor(android.R.color.black));
+        contents.setTextSize(getResources().getDisplayMetrics().density * 9f);
+        contents.setText(colB);
+        row.addView(contents);
+
+        return row;
     }
 
 

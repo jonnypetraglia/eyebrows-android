@@ -46,14 +46,13 @@ public class EyebrowsAdapter extends ArrayAdapter<JSONObject> {
     public View getView(int pos, View convertView, ViewGroup parent)
     {
         String name = null, icon = null;
-        long time, size = 0;
+        long size = 0;
 
 
         JSONObject want = fileList.get(pos);
         try {
             name = want.getString("name");
             icon = want.getString("icon");
-            time = want.getLong("time");
             size = want.getLong("size");
         } catch(JSONException e){
             e.printStackTrace();
